@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Special Message for You</title>
+  <style>
+    body {
+      background-color: #ffeef0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 400px;
+      width: 85%;
+    }
+    h1 { color: #ff4d6d; margin-bottom: 20px; }
+    p { font-size: 1.1rem; color: #555; line-height: 1.6; min-height: 80px; }
+    button {
+      background-color: #ff4d6d;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1rem;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+    button:hover { background-color: #ff758f; transform: scale(1.05); }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>❤️ Special Message</h1>
+    <p id="text-container">Klik tombol di bawah buat buka pesannya!</p>
+    <button onclick="startSurprise()">Buka Pesan</button>
+  </div>
+
+  <script>
+    const message = "Halo! Makasih ya udah mau scan QR ini. Semoga harimu menyenangkan dan selalu dipenuhi hal-hal baik!";
+    let index = 0;
+
+    function startSurprise() {
+      document.querySelector('button').style.display = 'none';
+      document.getElementById('text-container').innerHTML = '';
+      typeWriter();
+    }
+
+    function typeWriter() {
+      if (index < message.length) {
+        document.getElementById('text-container').innerHTML += message.charAt(index);
+        index++;
+        setTimeout(typeWriter, 50);
+      }
+    }
+  </script>
+</body>
+</html>
