@@ -1,9 +1,12 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>A Special Message for You</title>
+  <!-- Library Konfeti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     body {
       background-color: #ffeef0;
@@ -40,6 +43,9 @@
 </head>
 <body>
 
+  <!-- Element Musik Latar -->
+  <audio id="bg-music" src="music.mp3" loop></audio>
+
   <div class="card">
     <h1>❤️ Special Message</h1>
     <p id="text-container">Klik tombol di bawah buat buka pesannya!</p>
@@ -51,8 +57,22 @@
     let index = 0;
 
     function startSurprise() {
+      // 1. Sembunyikan tombol
       document.querySelector('button').style.display = 'none';
       document.getElementById('text-container').innerHTML = '';
+
+      // 2. Putar Musik
+      const music = document.getElementById('bg-music');
+      music.play().catch(err => console.log("Autoplay dicegah browser:", err));
+
+      // 3. Tembakkan Konfeti
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+
+      // 4. Jalankan Teks Mengetik
       typeWriter();
     }
 
