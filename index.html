@@ -1,233 +1,339 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A Special Message for You</title>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <style>
-    body {
-      background-color: #ffeef0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      /* Pastikan overflow disembunyikan agar hati tidak membuat scrollbar */
-      overflow: hidden; 
-      position: relative;
-    }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Special Message for You</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    body {
+      background-color: #ffeef0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      overflow: hidden; 
+      position: relative;
+      transition: background-color 2.5s ease; /* Transisi transisi Night Sky */
+    }
 
-    .card {
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-      text-align: center;
-      max-width: 400px;
-      width: 85%;
-      position: relative;
-      /* Pastikan kartu berada di atas hati yang melayang */
-      z-index: 10; 
-    }
+    /* Latar Bintang Night Sky */
+    .star {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+      animation: twinkle 2s infinite alternate ease-in-out;
+      transition: opacity 2s ease;
+    }
 
-    h1 { color: #ff4d6d; margin-bottom: 20px; font-size: 1.8rem; }
-    p { 
-      font-size: 1.1rem; 
-      color: #555; 
-      line-height: 1.6; 
-      min-height: 80px;
-      margin-bottom: 25px;
-    }
+    @keyframes twinkle {
+      0% { opacity: 0.2; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.2); }
+    }
 
-    /* Efek Kursor Ketik */
-    .cursor {
-      display: inline-block;
-      width: 2px;
-      background-color: #ff4d6d;
-      animation: blink 0.7s infinite;
-    }
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      text-align: center;
+      max-width: 400px;
+      width: 85%;
+      position: relative;
+      z-index: 10; 
+    }
 
-    .btn-main {
-      background-color: #ff4d6d;
-      color: white;
-      border: none;
-      padding: 12px 28px;
-      font-size: 1rem;
-      font-weight: 600;
-      border-radius: 25px;
-      cursor: pointer;
-      transition: transform 0.2s, background-color 0.2s;
-    }
-    .btn-main:hover { background-color: #ff758f; transform: scale(1.05); }
-    .btn-main:active { transform: scale(0.98); }
+    h1 { color: #ff4d6d; margin-bottom: 20px; font-size: 1.8rem; }
+    p { 
+      font-size: 1.1rem; 
+      color: #555; 
+      line-height: 1.6; 
+      min-height: 80px;
+      margin-bottom: 25px;
+    }
 
-    /* Tombol Mute Floating Sederhana */
-    .btn-audio {
-      background-color: #fff0f3;
-      color: #ff4d6d;
-      border: 1px solid #ff4d6d;
-      padding: 6px 14px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      border-radius: 15px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: none; /* Sembunyi sebelum pesan dibuka */
-      margin: 0 auto;
-    }
-    .btn-audio:hover {
-      background-color: #ff4d6d;
-      color: white;
-    }
+    /* Efek Kursor Ketik */
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      background-color: #ff4d6d;
+      animation: blink 0.7s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
 
-    /* --- Gaya untuk Floating Hearts --- */
-    .heart {
-      position: absolute;
-      color: #ff758f; /* Warna hati melayang, sedikit lebih muda dari tema */
-      font-size: 20px;
-      user-select: none;
-      pointer-events: none; /* Hati tidak bisa diklik */
-      z-index: 1; /* Di bawah kartu */
-      animation: floatUp 5s linear forwards;
-      opacity: 0;
-    }
+    .btn-main {
+      background-color: #ff4d6d;
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+    .btn-main:hover { background-color: #ff758f; transform: scale(1.05); }
+    .btn-main:active { transform: scale(0.98); }
 
-    @keyframes floatUp {
-      0% {
-        transform: translateY(100vh) rotate(0deg);
-        opacity: 0;
-      }
-      10% {
-        opacity: 0.8;
-      }
-      90% {
-        opacity: 0.8;
-      }
-      100% {
-        transform: translateY(-10vh) rotate(360deg);
-        opacity: 0;
-      }
-    }
-  </style>
+    .btn-audio {
+      background-color: #fff0f3;
+      color: #ff4d6d;
+      border: 1px solid #ff4d6d;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: none;
+      margin: 0 auto;
+    }
+    .btn-audio:hover {
+      background-color: #ff4d6d;
+      color: white;
+    }
+
+    /* Floating Hearts Latar Belakang */
+    .heart {
+      position: absolute;
+      color: #ff758f;
+      font-size: 20px;
+      user-select: none;
+      pointer-events: none;
+      z-index: 1;
+      animation: floatUp 5s linear forwards;
+      opacity: 0;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.8; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Interactive Click/Touch Heart Effect */
+    .click-heart {
+      position: absolute;
+      font-size: 22px;
+      pointer-events: none;
+      z-index: 999;
+      animation: clickPop 0.8s ease-out forwards;
+      transform: translate(-50%, -50%);
+    }
+
+    @keyframes clickPop {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+      50% { opacity: 1; transform: translate(-50%, -80px) scale(1.3); }
+      100% { opacity: 0; transform: translate(-50%, -120px) scale(1); }
+    }
+
+    /* Style Easter Egg Badge */
+    .easter-egg-trigger {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* Style Modal / Popup Easter Egg */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 1000;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1; pointer-events: auto;
+    }
+    .modal-box {
+      background: white; padding: 25px; border-radius: 18px;
+      max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      transform: scale(0.8); transition: transform 0.3s ease;
+    }
+    .modal-overlay.active .modal-box {
+      transform: scale(1);
+    }
+    .modal-box h2 { color: #ff4d6d; margin-top: 0; font-size: 1.4rem; }
+    .modal-box p { font-size: 0.95rem; color: #444; min-height: auto; margin-bottom: 20px; }
+  </style>
 </head>
 <body>
 
-  <!-- Musik Latar (Pastikan file music.mp3 ada) -->
-  <audio id="bg-music" src="music.mp3" loop></audio>
+  <audio id="bg-music" src="music.mp3" loop></audio>
 
-  <div class="card">
-    <h1>❤️ Special Message For You ❤️</h1>
-    <p><span id="text-container">Klik tombol di bawah buat buka pesannya!</span><span id="cursor" class="cursor" style="display:none;">&nbsp;</span></p>
-    
-    <button id="btn-open" class="btn-main" onclick="startSurprise()">Buka Pesan</button>
-    <button id="btn-audio" class="btn-audio" onclick="toggleAudio()">🔊 Musik: ON</button>
-  </div>
+  <div class="card">
+    <h1>❤️ Special Message For You ❤️</h1>
+    <p><span id="text-container">Klik tombol di bawah buat buka pesannya!</span><span id="cursor" class="cursor" style="display:none;">&nbsp;</span></p>
+    
+    <button id="btn-open" class="btn-main" onclick="startSurprise()">Buka Pesan</button>
+    <button id="btn-audio" class="btn-audio" onclick="toggleAudio()">🔊 Musik: ON</button>
+  </div>
 
-  <script>
-    const message = "Halo! Makasih ya karena udah berusaha hingga sejauh ini. I'm so proud of youuuuuuuuu ❤️❤️❤️";
-    let index = 0;
-    const music = document.getElementById('bg-music');
-    const textContainer = document.getElementById('text-container');
-    const cursor = document.getElementById('cursor');
-    const btnOpen = document.getElementById('btn-open');
-    const btnAudio = document.getElementById('btn-audio');
-    let isSurpriseStarted = false;
-    let heartInterval; // Untuk menyimpan interval pembuatan hati
+  <!-- Popup Easter Egg -->
+  <div id="easter-egg-modal" class="modal-overlay">
+    <div class="modal-box">
+      <h2>✨ Secret Message! ✨</h2>
+      <p>Kamu nemuin pesan rahasia ini! Makasih ya udah selalu ada dan jadi alasan buat tersenyum. You really mean a lot to me! 🤫💖</p>
+      <button class="btn-main" onclick="closeSecret()">Tutup</button>
+    </div>
+  </div>
 
-    function startSurprise() {
-      isSurpriseStarted = true;
-      btnOpen.style.display = 'none';
-      btnAudio.style.display = 'inline-block'; // Tampilkan tombol mute/unmute
-      textContainer.innerHTML = '';
-      cursor.style.display = 'inline-block';
+  <script>
+    const messagePart1 = "Halo! Makasih ya karena udah berusaha hingga sejauh ini. I'm so proud of youuuuuuuuu ";
+    const messagePart2 = "❤️"; // Target klik Easter Egg (diklik 3x)
+    
+    let index = 0;
+    const music = document.getElementById('bg-music');
+    const textContainer = document.getElementById('text-container');
+    const cursor = document.getElementById('cursor');
+    const btnOpen = document.getElementById('btn-open');
+    const btnAudio = document.getElementById('btn-audio');
+    let isSurpriseStarted = false;
+    let heartInterval;
+    let clickCount = 0;
 
-      music.play().catch(err => console.log("Autoplay dicegah browser:", err));
+    function startSurprise() {
+      isSurpriseStarted = true;
+      btnOpen.style.display = 'none';
+      btnAudio.style.display = 'inline-block';
+      textContainer.innerHTML = '';
+      cursor.style.display = 'inline-block';
 
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
+      // 1. Ubah Tema ke Night Sky (Gelap Malam Berbintang)
+      document.body.style.backgroundColor = "#0d1b2a";
+      createStars();
 
-      typeWriter();
-      
-      // Mulai membuat hati melayang
-      startHearts();
-    }
+      music.play().catch(err => console.log("Autoplay dicegah browser:", err));
 
-    function typeWriter() {
-      if (index < message.length) {
-        textContainer.innerHTML += message.charAt(index);
-        index++;
-        setTimeout(typeWriter, 50);
-      } else {
-        setTimeout(() => cursor.style.display = 'none', 1500);
-      }
-    }
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
 
-    // Fungsi Toggle Mute / Unmute
-    function toggleAudio() {
-      if (music.paused) {
-        music.play();
-        btnAudio.innerHTML = "🔊 Musik: ON";
-      } else {
-        music.pause();
-        btnAudio.innerHTML = "🔇 Musik: OFF";
-      }
-    }
+      typeWriter();
+      startHearts();
+    }
 
-    // --- Logika untuk Floating Hearts ---
-    function createHeart() {
-      const heart = document.createElement('div');
-      heart.classList.add('heart');
-      heart.innerHTML = '❤️'; // Karakter hati
+    function typeWriter() {
+      if (index < messagePart1.length) {
+        textContainer.innerHTML += messagePart1.charAt(index);
+        index++;
+        setTimeout(typeWriter, 50);
+      } else {
+        // Tambahkan elemen emoji hati yang bisa diklik buat Easter Egg
+        const eggSpan = document.createElement('span');
+        eggSpan.className = 'easter-egg-trigger';
+        eggSpan.innerHTML = "❤️❤️❤️";
+        eggSpan.onclick = triggerEasterEgg;
+        textContainer.appendChild(eggSpan);
 
-      // Posisi horizontal acak
-      heart.style.left = Math.random() * 100 + 'vw';
-      
-      // Ukuran acak (antara 10px dan 30px)
-      const size = Math.random() * 20 + 10 + 'px';
-      heart.style.fontSize = size;
-      
-      // Durasi animasi acak (antara 3s dan 7s) agar bervariasi
-      const duration = Math.random() * 4 + 3 + 's';
-      heart.style.animationDuration = duration;
+        setTimeout(() => cursor.style.display = 'none', 1500);
+      }
+    }
 
-      document.body.appendChild(heart);
+    /* --- Fitur 1: Interactive Click/Touch (Efek Tap Layar) --- */
+    document.addEventListener('click', function(e) {
+      // Jangan jalankan kalau mengklik tombol atau modal
+      if(e.target.tagName === 'BUTTON' || e.target.closest('.modal-box')) return;
 
-      // Hapus elemen hati setelah animasi selesai agar tidak menumpuk
-      setTimeout(() => {
-        heart.remove();
-      }, parseFloat(duration) * 1000);
-    }
+      const clickHeart = document.createElement('div');
+      clickHeart.className = 'click-heart';
+      clickHeart.innerHTML = '💖';
+      clickHeart.style.left = e.clientX + 'px';
+      clickHeart.style.top = e.clientY + 'px';
+      
+      document.body.appendChild(clickHeart);
 
-    function startHearts() {
-      // Buat hati setiap 300ms
-      heartInterval = setInterval(createHeart, 300);
-    }
+      setTimeout(() => clickHeart.remove(), 800);
+    });
 
-    document.addEventListener("visibilitychange", function() {
-      if (document.hidden) {
-        music.pause();
-        // Hentikan pembuatan hati saat tab tidak aktif
-        clearInterval(heartInterval);
-      } else {
-        // Hanya play kembali jika pengguna tidak sengaja mematikan audio secara manual
-        if (isSurpriseStarted && btnAudio.innerHTML.includes("ON")) {
-          music.play().catch(err => console.log(err));
-        }
-        // Mulai kembali membuat hati jika kejutan sudah dimulai
-        if (isSurpriseStarted) {
-          startHearts();
-        }
-      }
-    });
-  </script>
+    /* --- Fitur 2: Night Sky (Bintang-bintang) --- */
+    function createStars() {
+      for (let i = 0; i < 40; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        const size = Math.random() * 3 + 1 + 'px';
+        star.style.width = size;
+        star.style.height = size;
+        star.style.left = Math.random() * 100 + 'vw';
+        star.style.top = Math.random() * 100 + 'vh';
+        star.style.animationDelay = Math.random() * 2 + 's';
+        document.body.appendChild(star);
+
+        setTimeout(() => star.style.opacity = '1', 100);
+      }
+    }
+
+    /* --- Fitur 3: Easter Egg (3x Klik pada Heart) --- */
+    function triggerEasterEgg() {
+      clickCount++;
+      if (clickCount >= 3) {
+        document.getElementById('easter-egg-modal').classList.add('active');
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.5 } });
+        clickCount = 0;
+      }
+    }
+
+    function closeSecret() {
+      document.getElementById('easter-egg-modal').classList.remove('active');
+    }
+
+    // Toggle Audio
+    function toggleAudio() {
+      if (music.paused) {
+        music.play();
+        btnAudio.innerHTML = "🔊 Musik: ON";
+      } else {
+        music.pause();
+        btnAudio.innerHTML = "🔇 Musik: OFF";
+      }
+    }
+
+    // Floating Hearts
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.innerHTML = '❤️';
+      heart.style.left = Math.random() * 100 + 'vw';
+      
+      const size = Math.random() * 20 + 10 + 'px';
+      heart.style.fontSize = size;
+      
+      const duration = Math.random() * 4 + 3 + 's';
+      heart.style.animationDuration = duration;
+
+      document.body.appendChild(heart);
+
+      setTimeout(() => heart.remove(), parseFloat(duration) * 1000);
+    }
+
+    function startHearts() {
+      heartInterval = setInterval(createHeart, 300);
+    }
+
+    document.addEventListener("visibilitychange", function() {
+      if (document.hidden) {
+        music.pause();
+        clearInterval(heartInterval);
+      } else {
+        if (isSurpriseStarted && btnAudio.innerHTML.includes("ON")) {
+          music.play().catch(err => console.log(err));
+        }
+        if (isSurpriseStarted) {
+          startHearts();
+        }
+      }
+    });
+  </script>
 </body>
 </html>
