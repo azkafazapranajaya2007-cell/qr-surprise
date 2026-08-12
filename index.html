@@ -1,577 +1,545 @@
+cat << 'EOF' > index.html
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A Special Message for You</title>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Special Message for You</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-    body {
-      background-color: #ffeef0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      overflow: hidden; 
-      position: relative;
-      transition: background-color 2.5s ease;
-    }
+    body {
+      background-color: #ffeef0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      overflow: hidden; 
+      position: relative;
+      transition: background-color 2.5s ease;
+    }
 
-    /* --- Night Sky Stars --- */
-    .star {
-      position: absolute;
-      background-color: white;
-      border-radius: 50%;
-      opacity: 0;
-      pointer-events: none;
-      animation: twinkle 2s infinite alternate ease-in-out;
-      transition: opacity 2s ease;
-    }
+    .star {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+      animation: twinkle 2s infinite alternate ease-in-out;
+      transition: opacity 2s ease;
+    }
 
-    @keyframes twinkle {
-      0% { opacity: 0.2; transform: scale(0.8); }
-      100% { opacity: 1; transform: scale(1.2); }
-    }
+    @keyframes twinkle {
+      0% { opacity: 0.2; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.2); }
+    }
 
-    /* --- Interactive Envelope Wrapper --- */
-    .envelope-wrapper {
-      position: relative;
-      width: 320px;
-      height: 220px;
-      background-color: #ff758f;
-      border-bottom-left-radius: 12px;
-      border-bottom-right-radius: 12px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-      cursor: pointer;
-      z-index: 10;
-      transition: transform 0.4s ease, opacity 0.8s ease;
-    }
+    .envelope-wrapper {
+      position: relative;
+      width: 320px;
+      height: 220px;
+      background-color: #ff758f;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      cursor: pointer;
+      z-index: 10;
+      transition: transform 0.4s ease, opacity 0.8s ease;
+    }
 
-    .envelope-wrapper:hover {
-      transform: scale(1.03);
-    }
+    .envelope-wrapper:hover {
+      transform: scale(1.03);
+    }
 
-    /* Flap Amplop (Atas) */
-    .envelope-wrapper::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      border-left: 160px solid transparent;
-      border-right: 160px solid transparent;
-      border-top: 120px solid #ff4d6d;
-      transform-origin: top;
-      transition: transform 0.6s ease-in-out;
-      z-index: 12;
-    }
+    .envelope-wrapper::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-left: 160px solid transparent;
+      border-right: 160px solid transparent;
+      border-top: 120px solid #ff4d6d;
+      transform-origin: top;
+      transition: transform 0.6s ease-in-out;
+      z-index: 12;
+    }
 
-    /* Kantong Amplop (Depan) */
-    .envelope-pocket {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 0;
-      border-left: 160px solid #ff5c7a;
-      border-right: 160px solid #ff5c7a;
-      border-bottom: 110px solid #ff4d6d;
-      border-bottom-left-radius: 12px;
-      border-bottom-right-radius: 12px;
-      z-index: 11;
-    }
+    .envelope-pocket {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 160px solid #ff5c7a;
+      border-right: 160px solid #ff5c7a;
+      border-bottom: 110px solid #ff4d6d;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+      z-index: 11;
+    }
 
-    .envelope-seal {
-      position: absolute;
-      top: 95px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 45px;
-      height: 45px;
-      background-color: #e63946;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      font-size: 20px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      z-index: 13;
-      transition: opacity 0.4s ease;
-    }
+    .envelope-seal {
+      position: absolute;
+      top: 95px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 45px;
+      height: 45px;
+      background-color: #e63946;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 13;
+      transition: opacity 0.4s ease;
+    }
 
-    .envelope-hint {
-      position: absolute;
-      bottom: -40px;
-      width: 100%;
-      text-align: center;
-      color: #ff4d6d;
-      font-weight: 600;
-      font-size: 0.95rem;
-      animation: pulse 1.5s infinite;
-    }
+    .envelope-hint {
+      position: absolute;
+      bottom: -40px;
+      width: 100%;
+      text-align: center;
+      color: #ff4d6d;
+      font-weight: 600;
+      font-size: 0.95rem;
+      animation: pulse 1.5s infinite;
+    }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 0.6; transform: translateY(0); }
-      50% { opacity: 1; transform: translateY(-5px); }
-    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; transform: translateY(0); }
+      50% { opacity: 1; transform: translateY(-5px); }
+    }
 
-    /* Kelas saat amplop dibuka */
-    .envelope-wrapper.open::before {
-      transform: rotateX(180deg);
-      z-index: 9;
-    }
+    .envelope-wrapper.open::before {
+      transform: rotateX(180deg);
+      z-index: 9;
+    }
 
-    /* --- Card Style --- */
-    .card {
-      background: white;
-      padding: 30px 25px;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      text-align: center;
-      max-width: 400px;
-      width: 88%;
-      position: absolute;
-      z-index: 15;
-      opacity: 0;
-      transform: translateY(50px) scale(0.9);
-      pointer-events: none;
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
+    .card {
+      background: white;
+      padding: 30px 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      text-align: center;
+      max-width: 400px;
+      width: 88%;
+      position: absolute;
+      z-index: 15;
+      opacity: 0;
+      transform: translateY(50px) scale(0.9);
+      pointer-events: none;
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
 
-    .card.active {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      pointer-events: auto;
-    }
+    .card.active {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
 
-    h1 { color: #ff4d6d; margin-bottom: 15px; font-size: 1.6rem; }
-    p { 
-      font-size: 1.05rem; 
-      color: #555; 
-      line-height: 1.6; 
-      min-height: 70px;
-      margin-bottom: 20px;
-    }
+    h1 { color: #ff4d6d; margin-bottom: 15px; font-size: 1.6rem; }
+    p { 
+      font-size: 1.05rem; 
+      color: #555; 
+      line-height: 1.6; 
+      min-height: 70px;
+      margin-bottom: 20px;
+    }
 
-    /* --- Interactive Candle Style --- */
-    .candle-container {
-      margin: 15px auto 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-      user-select: none;
-    }
+    .candle-container {
+      margin: 15px auto 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
 
-    .candle {
-      width: 34px;
-      height: 80px;
-      background: linear-gradient(to bottom, #ff9ebb, #ff4d6d);
-      border-radius: 8px 8px 4px 4px;
-      position: relative;
-      box-shadow: inset -4px 0 6px rgba(0,0,0,0.15);
-    }
+    .candle {
+      width: 34px;
+      height: 80px;
+      background: linear-gradient(to bottom, #ff9ebb, #ff4d6d);
+      border-radius: 8px 8px 4px 4px;
+      position: relative;
+      box-shadow: inset -4px 0 6px rgba(0,0,0,0.15);
+    }
 
-    .wick {
-      position: absolute;
-      top: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 4px;
-      height: 10px;
-      background-color: #555;
-      border-radius: 2px;
-    }
+    .wick {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 10px;
+      background-color: #555;
+      border-radius: 2px;
+    }
 
-    .flame {
-      position: absolute;
-      top: -32px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 18px;
-      height: 26px;
-      background: radial-gradient(ellipse at bottom, #ffee55 0%, #ff9900 60%, #ff3300 100%);
-      border-radius: 50% 50% 35% 35%;
-      box-shadow: 0 0 15px #ff9900, 0 0 25px #ffee55;
-      animation: flicker 0.1s infinite alternate;
-      transition: opacity 0.5s ease, transform 0.5s ease;
-    }
+    .flame {
+      position: absolute;
+      top: -32px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 18px;
+      height: 26px;
+      background: radial-gradient(ellipse at bottom, #ffee55 0%, #ff9900 60%, #ff3300 100%);
+      border-radius: 50% 50% 35% 35%;
+      box-shadow: 0 0 15px #ff9900, 0 0 25px #ffee55;
+      animation: flicker 0.1s infinite alternate;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
 
-    @keyframes flicker {
-      0% { transform: translateX(-50%) scale(1) rotate(-1deg); }
-      100% { transform: translateX(-50%) scale(1.08) rotate(1deg); }
-    }
+    @keyframes flicker {
+      0% { transform: translateX(-50%) scale(1) rotate(-1deg); }
+      100% { transform: translateX(-50%) scale(1.08) rotate(1deg); }
+    }
 
-    .flame.off {
-      opacity: 0;
-      transform: translateX(-50%) scale(0);
-    }
+    .flame.off {
+      opacity: 0;
+      transform: translateX(-50%) scale(0);
+    }
 
-    .candle-hint {
-      font-size: 0.85rem;
-      color: #ff4d6d;
-      margin-top: 10px;
-      font-weight: 600;
-      background: #fff0f3;
-      padding: 6px 14px;
-      border-radius: 12px;
-      transition: all 0.3s ease;
-    }
+    .candle-hint {
+      font-size: 0.85rem;
+      color: #ff4d6d;
+      margin-top: 10px;
+      font-weight: 600;
+      background: #fff0f3;
+      padding: 6px 14px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
 
-    /* --- Typing Cursor --- */
-    .cursor {
-      display: inline-block;
-      width: 2px;
-      background-color: #ff4d6d;
-      animation: blink 0.7s infinite;
-    }
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      background-color: #ff4d6d;
+      animation: blink 0.7s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
 
-    /* --- Direct Reply WhatsApp Button --- */
-    .btn-whatsapp {
-      display: none;
-      background-color: #25D366;
-      color: white;
-      border: none;
-      padding: 12px 22px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      border-radius: 25px;
-      cursor: pointer;
-      text-decoration: none;
-      margin: 15px auto 5px;
-      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
-      transition: transform 0.2s, background-color 0.2s;
-    }
-    .btn-whatsapp:hover {
-      background-color: #20ba5a;
-      transform: scale(1.05);
-    }
+    .btn-whatsapp {
+      display: none;
+      background-color: #25D366;
+      color: white;
+      border: none;
+      padding: 12px 22px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 25px;
+      cursor: pointer;
+      text-decoration: none;
+      margin: 15px auto 5px;
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+      transition: transform 0.2s, background-color 0.2s;
+    }
+    .btn-whatsapp:hover {
+      background-color: #20ba5a;
+      transform: scale(1.05);
+    }
 
-    .btn-audio {
-      background-color: #fff0f3;
-      color: #ff4d6d;
-      border: 1px solid #ff4d6d;
-      padding: 6px 14px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      border-radius: 15px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: none;
-      margin: 10px auto 0;
-    }
-    .btn-audio:hover {
-      background-color: #ff4d6d;
-      color: white;
-    }
+    .btn-audio {
+      background-color: #fff0f3;
+      color: #ff4d6d;
+      border: 1px solid #ff4d6d;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: none;
+      margin: 10px auto 0;
+    }
+    .btn-audio:hover {
+      background-color: #ff4d6d;
+      color: white;
+    }
 
-    /* --- Floating Hearts & Click Effects --- */
-    .heart {
-      position: absolute;
-      color: #ff758f;
-      font-size: 20px;
-      user-select: none;
-      pointer-events: none;
-      z-index: 1;
-      animation: floatUp 5s linear forwards;
-      opacity: 0;
-    }
+    .heart {
+      position: absolute;
+      color: #ff758f;
+      font-size: 20px;
+      user-select: none;
+      pointer-events: none;
+      z-index: 1;
+      animation: floatUp 5s linear forwards;
+      opacity: 0;
+    }
 
-    @keyframes floatUp {
-      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-      10% { opacity: 0.8; }
-      90% { opacity: 0.8; }
-      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
-    }
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.8; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
 
-    .click-heart {
-      position: absolute;
-      font-size: 22px;
-      pointer-events: none;
-      z-index: 999;
-      animation: clickPop 0.8s ease-out forwards;
-      transform: translate(-50%, -50%);
-    }
+    .click-heart {
+      position: absolute;
+      font-size: 22px;
+      pointer-events: none;
+      z-index: 999;
+      animation: clickPop 0.8s ease-out forwards;
+      transform: translate(-50%, -50%);
+    }
 
-    @keyframes clickPop {
-      0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
-      50% { opacity: 1; transform: translate(-50%, -80px) scale(1.3); }
-      100% { opacity: 0; transform: translate(-50%, -120px) scale(1); }
-    }
+    @keyframes clickPop {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+      50% { opacity: 1; transform: translate(-50%, -80px) scale(1.3); }
+      100% { opacity: 0; transform: translate(-50%, -120px) scale(1); }
+    }
 
-    .easter-egg-trigger {
-      cursor: pointer;
-      user-select: none;
-    }
+    .easter-egg-trigger {
+      cursor: pointer;
+      user-select: none;
+    }
 
-    /* --- Modal Easter Egg --- */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      display: flex; justify-content: center; align-items: center;
-      z-index: 1000;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-    .modal-overlay.active {
-      opacity: 1; pointer-events: auto;
-    }
-    .modal-box {
-      background: white; padding: 25px; border-radius: 18px;
-      max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      transform: scale(0.8); transition: transform 0.3s ease;
-    }
-    .modal-overlay.active .modal-box {
-      transform: scale(1);
-    }
-    .modal-box h2 { color: #ff4d6d; margin-top: 0; font-size: 1.4rem; }
-    .modal-box p { font-size: 0.95rem; color: #444; min-height: auto; margin-bottom: 20px; }
-    
-    .btn-main {
-      background-color: #ff4d6d; color: white; border: none;
-      padding: 10px 24px; font-size: 0.95rem; font-weight: 600;
-      border-radius: 20px; cursor: pointer;
-    }
-  </style>
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 1000;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1; pointer-events: auto;
+    }
+    .modal-box {
+      background: white; padding: 25px; border-radius: 18px;
+      max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      transform: scale(0.8); transition: transform 0.3s ease;
+    }
+    .modal-overlay.active .modal-box {
+      transform: scale(1);
+    }
+    .modal-box h2 { color: #ff4d6d; margin-top: 0; font-size: 1.4rem; }
+    .modal-box p { font-size: 0.95rem; color: #444; min-height: auto; margin-bottom: 20px; }
+    
+    .btn-main {
+      background-color: #ff4d6d; color: white; border: none;
+      padding: 10px 24px; font-size: 0.95rem; font-weight: 600;
+      border-radius: 20px; cursor: pointer;
+    }
+  </style>
 </head>
 <body>
 
-  <audio id="bg-music" src="music.mp3" loop></audio>
+  <audio id="bg-music" src="music.mp3" loop></audio>
 
-  <!-- 1. Interactive Envelope -->
-  <div id="envelope" class="envelope-wrapper" onclick="openEnvelope()">
-    <div class="envelope-pocket"></div>
-    <div id="seal" class="envelope-seal">💌</div>
-    <div id="envelope-hint" class="envelope-hint">Klik amplop untuk membuka ✉️</div>
-  </div>
+  <div id="envelope" class="envelope-wrapper" onclick="openEnvelope()">
+    <div class="envelope-pocket"></div>
+    <div id="seal" class="envelope-seal">💌</div>
+    <div id="envelope-hint" class="envelope-hint">Klik amplop untuk membuka ✉️</div>
+  </div>
 
-  <!-- 2. Main Card -->
-  <div id="main-card" class="card">
-    <h1>❤️ Special Message For You ❤️</h1>
-    
-    <!-- Candle Stage (Make a Wish) -->
-    <div id="candle-section" class="candle-container" onclick="blowCandle()">
-      <div class="candle">
-        <div class="wick"></div>
-        <div id="flame" class="flame"></div>
-      </div>
-      <div id="candle-hint" class="candle-hint">🕯️ Tiup/Klik lilin untuk Make a Wish!</div>
-    </div>
+  <div id="main-card" class="card">
+    <h1>❤️ Special Message For You ❤️</h1>
+    
+    <div id="candle-section" class="candle-container" onclick="blowCandle()">
+      <div class="candle">
+        <div class="wick"></div>
+        <div id="flame" class="flame"></div>
+      </div>
+      <div id="candle-hint" class="candle-hint">🕯️ Tiup/Klik lilin untuk Make a Wish!</div>
+    </div>
 
-    <!-- Message Container -->
-    <p><span id="text-container"></span><span id="cursor" class="cursor" style="display:none;">&nbsp;</span></p>
-    
-    <!-- Direct Reply Button (WhatsApp) -->
-    <!-- Ganti '6281234567890' dengan nomor WhatsApp milikmu -->
-    <a id="btn-reply" 
-       href="https://wa.me/6289646660731?text=Makasih%20banyak%20buat%20pesan%20dan%20kejutannya!%20Aku%20suka%20banget%20🥰💖" 
-       target="_blank" 
-       class="btn-whatsapp">
-       💬 Kirim Balasan ke WhatsApp
-    </a>
+    <p><span id="text-container"></span><span id="cursor" class="cursor" style="display:none;">&nbsp;</span></p>
+    
+    <a id="btn-reply" 
+       href="https://wa.me/6289646660731?text=Makasih%20banyak%20buat%20pesan%20dan%20kejutannya!%20Aku%20suka%20banget%20🥰💖" 
+       target="_blank" 
+       class="btn-whatsapp">
+       💬 Kirim Balasan ke WhatsApp
+    </a>
 
-    <button id="btn-audio" class="btn-audio" onclick="toggleAudio()">🔊 Musik: ON</button>
-  </div>
+    <button id="btn-audio" class="btn-audio" onclick="toggleAudio()">🔊 Musik: ON</button>
+  </div>
 
-  <!-- 3. Easter Egg Modal -->
-  <div id="easter-egg-modal" class="modal-overlay">
-    <div class="modal-box">
-      <h2>✨ Secret Message! ✨</h2>
-      <p>Kamu nemuin pesan rahasia ini! Makasih ya udah selalu ada dan jadi alasan buat tersenyum. You really mean a lot to me! 🤫💖</p>
-      <button class="btn-main" onclick="closeSecret()">Tutup</button>
-    </div>
-  </div>
+  <div id="easter-egg-modal" class="modal-overlay">
+    <div class="modal-box">
+      <h2>✨ Secret Message! ✨</h2>
+      <p>Kamu nemuin pesan rahasia ini! Makasih ya udah selalu ada dan jadi alasan buat tersenyum. You really mean a lot to me! 🤫💖</p>
+      <button class="btn-main" onclick="closeSecret()">Tutup</button>
+    </div>
+  </div>
 
-  <script>
-    const messagePart1 = "Halo! Makasih ya karena udah berusaha hingga sejauh ini. I'm so proud of youuuuuuuuu ";
-    
-    let index = 0;
-    const music = document.getElementById('bg-music');
-    const textContainer = document.getElementById('text-container');
-    const cursor = document.getElementById('cursor');
-    const btnAudio = document.getElementById('btn-audio');
-    const envelope = document.getElementById('envelope');
-    const mainCard = document.getElementById('main-card');
-    const flame = document.getElementById('flame');
-    const candleHint = document.getElementById('candle-hint');
-    const btnReply = document.getElementById('btn-reply');
-    
-    let isSurpriseStarted = false;
-    let isCandleBlown = false;
-    let heartInterval;
-    let clickCount = 0;
+  <script>
+    const messagePart1 = "Halo! Makasih ya karena udah berusaha hingga sejauh ini. I'm so proud of youuuuuuuuu ";
+    
+    let index = 0;
+    const music = document.getElementById('bg-music');
+    const textContainer = document.getElementById('text-container');
+    const cursor = document.getElementById('cursor');
+    const btnAudio = document.getElementById('btn-audio');
+    const envelope = document.getElementById('envelope');
+    const mainCard = document.getElementById('main-card');
+    const flame = document.getElementById('flame');
+    const candleHint = document.getElementById('candle-hint');
+    const btnReply = document.getElementById('btn-reply');
+    
+    let isSurpriseStarted = false;
+    let isCandleBlown = false;
+    let heartInterval;
+    let clickCount = 0;
 
-    // --- Langkah 1: Buka Amplop ---
-    function openEnvelope() {
-      if (envelope.classList.contains('open')) return;
+    function openEnvelope() {
+      if (envelope.classList.contains('open')) return;
 
-      envelope.classList.add('open');
-      document.getElementById('seal').style.opacity = '0';
-      document.getElementById('envelope-hint').style.display = 'none';
+      envelope.classList.add('open');
+      document.getElementById('seal').style.opacity = '0';
+      document.getElementById('envelope-hint').style.display = 'none';
 
-      // Musik dan Latar Belakang Night Sky langsung aktif
-      document.body.style.backgroundColor = "#0d1b2a";
-      createStars();
-      music.play().catch(err => console.log("Autoplay dicegah browser:", err));
+      document.body.style.backgroundColor = "#0d1b2a";
+      createStars();
+      music.play().catch(err => console.log("Autoplay dicegah browser:", err));
 
-      // Hilangkan amplop & kemunculan kartu
-      setTimeout(() => {
-        envelope.style.opacity = '0';
-        setTimeout(() => {
-          envelope.style.display = 'none';
-          mainCard.classList.add('active');
-          btnAudio.style.display = 'inline-block';
-        }, 500);
-      }, 800);
-    }
+      setTimeout(() => {
+        envelope.style.opacity = '0';
+        setTimeout(() => {
+          envelope.style.display = 'none';
+          mainCard.classList.add('active');
+          btnAudio.style.display = 'inline-block';
+        }, 500);
+      }, 800);
+    }
 
-    // --- Langkah 2: Tiup Lilin (Make a Wish) ---
-    function blowCandle() {
-      if (isCandleBlown) return;
-      isCandleBlown = true;
+    function blowCandle() {
+      if (isCandleBlown) return;
+      isCandleBlown = true;
 
-      flame.classList.add('off');
-      candleHint.innerHTML = "✨ Wish Granted! ✨";
-      candleHint.style.background = "#e8f5e9";
-      candleHint.style.color = "#2e7d32";
+      flame.classList.add('off');
+      candleHint.innerHTML = "✨ Wish Granted! ✨";
+      candleHint.style.background = "#e8f5e9";
+      candleHint.style.color = "#2e7d32";
 
-      // Ledakan Confetti
-      confetti({
-        particleCount: 120,
-        spread: 80,
-        origin: { y: 0.6 }
-      });
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 }
+      });
 
-      // Mulai Animasi Ketik Teks & Hati Melayang
-      isSurpriseStarted = true;
-      cursor.style.display = 'inline-block';
-      setTimeout(typeWriter, 800);
-      startHearts();
-    }
+      isSurpriseStarted = true;
+      cursor.style.display = 'inline-block';
+      setTimeout(typeWriter, 800);
+      startHearts();
+    }
 
-    // --- Langkah 3: Animasi Ketik Teks ---
-    function typeWriter() {
-      if (index < messagePart1.length) {
-        textContainer.innerHTML += messagePart1.charAt(index);
-        index++;
-        setTimeout(typeWriter, 50);
-      } else {
-        // Tambah Emoji Easter Egg (Klik 3x)
-        const eggSpan = document.createElement('span');
-        eggSpan.className = 'easter-egg-trigger';
-        eggSpan.innerHTML = "❤️❤️❤️";
-        eggSpan.onclick = triggerEasterEgg;
-        textContainer.appendChild(eggSpan);
+    function typeWriter() {
+      if (index < messagePart1.length) {
+        textContainer.innerHTML += messagePart1.charAt(index);
+        index++;
+        setTimeout(typeWriter, 50);
+      } else {
+        const eggSpan = document.createElement('span');
+        eggSpan.className = 'easter-egg-trigger';
+        eggSpan.innerHTML = "❤️❤️❤️";
+        eggSpan.onclick = triggerEasterEgg;
+        textContainer.appendChild(eggSpan);
 
-        setTimeout(() => cursor.style.display = 'none', 1000);
+        setTimeout(() => cursor.style.display = 'none', 1000);
+        btnReply.style.display = 'inline-flex';
+      }
+    }
 
-        // Munculkan Tombol Balas ke WhatsApp
-        btnReply.style.display = 'inline-flex';
-      }
-    }
+    document.addEventListener('click', function(e) {
+      if(e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || e.target.closest('.modal-box')) return;
 
-    // --- Interactive Click/Touch (Heart Effect) ---
-    document.addEventListener('click', function(e) {
-      if(e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || e.target.closest('.modal-box')) return;
+      const clickHeart = document.createElement('div');
+      clickHeart.className = 'click-heart';
+      clickHeart.innerHTML = '💖';
+      clickHeart.style.left = e.clientX + 'px';
+      clickHeart.style.top = e.clientY + 'px';
+      
+      document.body.appendChild(clickHeart);
+      setTimeout(() => clickHeart.remove(), 800);
+    });
 
-      const clickHeart = document.createElement('div');
-      clickHeart.className = 'click-heart';
-      clickHeart.innerHTML = '💖';
-      clickHeart.style.left = e.clientX + 'px';
-      clickHeart.style.top = e.clientY + 'px';
-      
-      document.body.appendChild(clickHeart);
-      setTimeout(() => clickHeart.remove(), 800);
-    });
+    function createStars() {
+      for (let i = 0; i < 45; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        const size = Math.random() * 3 + 1 + 'px';
+        star.style.width = size;
+        star.style.height = size;
+        star.style.left = Math.random() * 100 + 'vw';
+        star.style.top = Math.random() * 100 + 'vh';
+        star.style.animationDelay = Math.random() * 2 + 's';
+        document.body.appendChild(star);
 
-    // --- Membuat Bintang (Night Sky) ---
-    function createStars() {
-      for (let i = 0; i < 45; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        const size = Math.random() * 3 + 1 + 'px';
-        star.style.width = size;
-        star.style.height = size;
-        star.style.left = Math.random() * 100 + 'vw';
-        star.style.top = Math.random() * 100 + 'vh';
-        star.style.animationDelay = Math.random() * 2 + 's';
-        document.body.appendChild(star);
+        setTimeout(() => star.style.opacity = '1', 100);
+      }
+    }
 
-        setTimeout(() => star.style.opacity = '1', 100);
-      }
-    }
+    function triggerEasterEgg() {
+      clickCount++;
+      if (clickCount >= 3) {
+        document.getElementById('easter-egg-modal').classList.add('active');
+        confetti({ particleCount: 60, spread: 70, origin: { y: 0.5 } });
+        clickCount = 0;
+      }
+    }
 
-    // --- Easter Egg Trigger ---
-    function triggerEasterEgg() {
-      clickCount++;
-      if (clickCount >= 3) {
-        document.getElementById('easter-egg-modal').classList.add('active');
-        confetti({ particleCount: 60, spread: 70, origin: { y: 0.5 } });
-        clickCount = 0;
-      }
-    }
+    function closeSecret() {
+      document.getElementById('easter-egg-modal').classList.remove('active');
+    }
 
-    function closeSecret() {
-      document.getElementById('easter-egg-modal').classList.remove('active');
-    }
+    function toggleAudio() {
+      if (music.paused) {
+        music.play();
+        btnAudio.innerHTML = "🔊 Musik: ON";
+      } else {
+        music.pause();
+        btnAudio.innerHTML = "🔇 Musik: OFF";
+      }
+    }
 
-    // --- Toggle Audio ---
-    function toggleAudio() {
-      if (music.paused) {
-        music.play();
-        btnAudio.innerHTML = "🔊 Musik: ON";
-      } else {
-        music.pause();
-        btnAudio.innerHTML = "🔇 Musik: OFF";
-      }
-    }
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.innerHTML = '❤️';
+      heart.style.left = Math.random() * 100 + 'vw';
+      
+      const size = Math.random() * 20 + 10 + 'px';
+      heart.style.fontSize = size;
+      
+      const duration = Math.random() * 4 + 3 + 's';
+      heart.style.animationDuration = duration;
 
-    // --- Floating Hearts Background ---
-    function createHeart() {
-      const heart = document.createElement('div');
-      heart.classList.add('heart');
-      heart.innerHTML = '❤️';
-      heart.style.left = Math.random() * 100 + 'vw';
-      
-      const size = Math.random() * 20 + 10 + 'px';
-      heart.style.fontSize = size;
-      
-      const duration = Math.random() * 4 + 3 + 's';
-      heart.style.animationDuration = duration;
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), parseFloat(duration) * 1000);
+    }
 
-      document.body.appendChild(heart);
-      setTimeout(() => heart.remove(), parseFloat(duration) * 1000);
-    }
+    function startHearts() {
+      heartInterval = setInterval(createHeart, 300);
+    }
 
-    function startHearts() {
-      heartInterval = setInterval(createHeart, 300);
-    }
-
-    // --- Handling Tab Active/Hidden ---
-    document.addEventListener("visibilitychange", function() {
-      if (document.hidden) {
-        music.pause();
-        clearInterval(heartInterval);
-      } else {
-        if (isSurpriseStarted && btnAudio.innerHTML.includes("ON")) {
-          music.play().catch(err => console.log(err));
-        }
-        if (isSurpriseStarted) {
-          startHearts();
-        }
-      }
-    });
-  </script>
+    document.addEventListener("visibilitychange", function() {
+      if (document.hidden) {
+        music.pause();
+        clearInterval(heartInterval);
+      } else {
+        if (isSurpriseStarted && btnAudio.innerHTML.includes("ON")) {
+          music.play().catch(err => console.log(err));
+        }
+        if (isSurpriseStarted) {
+          startHearts();
+        }
+      }
+    });
+  </script>
 </body>
 </html>
+EOF
