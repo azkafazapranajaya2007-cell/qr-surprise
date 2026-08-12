@@ -1,103 +1,93 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A Special Message for You</title>
-  <!-- Library Konfeti -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <style>
-    body {
-      background-color: #ffeef0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-    }
-    .card {
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-      text-align: center;
-      max-width: 400px;
-      width: 85%;
-    }
-    h1 { color: #ff4d6d; margin-bottom: 20px; }
-    p { font-size: 1.1rem; color: #555; line-height: 1.6; min-height: 80px; }
-    button {
-      background-color: #ff4d6d;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      font-size: 1rem;
-      border-radius: 25px;
-      cursor: pointer;
-      transition: transform 0.2s, background-color 0.2s;
-    }
-    button:hover { background-color: #ff758f; transform: scale(1.05); }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Special Message for You</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    body {
+      background-color: #ffeef0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 400px;
+      width: 85%;
+    }
+    h1 { color: #ff4d6d; margin-bottom: 20px; }
+    p { font-size: 1.1rem; color: #555; line-height: 1.6; min-height: 80px; }
+    button {
+      background-color: #ff4d6d;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1rem;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+    button:hover { background-color: #ff758f; transform: scale(1.05); }
+  </style>
 </head>
 <body>
 
-  <!-- Element Musik Latar -->
-  <audio id="bg-music" src="music.mp3" loop></audio>
+  <audio id="bg-music" src="music.mp3" loop></audio>
 
-  <div class="card">
-    <h1>❤️ Special Message For You</h1>
-    <p id="text-container">Klik tombol di bawah buat buka pesannya!</p>
-    <button onclick="startSurprise()">Buka Pesan</button>
-  </div>
+  <div class="card">
+    <h1>❤️ Special Message For You</h1>
+    <p id="text-container">Klik tombol di bawah buat buka pesannya!</p>
+    <button onclick="startSurprise()">Buka Pesan</button>
+  </div>
 
-  <script>
-    const message = "Halo! Makasih ya karena udah berusaha hingga sejauh ini. I'm so proud of you ❤️❤️❤️";
-    let index = 0;
-    const music = document.getElementById('bg-music');
-    let isSurpriseStarted = false;
+  <script>
+    const message = "Halo! Makasih ya karena udah berusaha hingga sejauh ini. I'm so proud of you ❤️❤️❤️";
+    let index = 0;
+    const music = document.getElementById('bg-music');
+    let isSurpriseStarted = false;
 
-    function startSurprise() {
-      isSurpriseStarted = true;
+    function startSurprise() {
+      isSurpriseStarted = true;
+      document.querySelector('button').style.display = 'none';
+      document.getElementById('text-container').innerHTML = '';
 
-      // 1. Sembunyikan tombol
-      document.querySelector('button').style.display = 'none';
-      document.getElementById('text-container').innerHTML = '';
+      music.play().catch(err => console.log("Autoplay dicegah browser:", err));
 
-      // 2. Putar Musik
-      music.play().catch(err => console.log("Autoplay dicegah browser:", err));
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
 
-      // 3. Tembakkan Konfeti
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
+      typeWriter();
+    }
 
-      // 4. Jalankan Teks Mengetik
-      typeWriter();
-    }
+    function typeWriter() {
+      if (index < message.length) {
+        document.getElementById('text-container').innerHTML += message.charAt(index);
+        index++;
+        setTimeout(typeWriter, 50);
+      }
+    }
 
-    function typeWriter() {
-      if (index < message.length) {
-        document.getElementById('text-container').innerHTML += message.charAt(index);
-        index++;
-        setTimeout(typeWriter, 50);
-      }
-    }
-
-    // --- FITUR AUTO PAUSE MUSIK KETIKA KELUAR APLIKASI/TAB ---
-    document.addEventListener("visibilitychange", function() {
-      if (document.hidden) {
-        // Jika pengguna keluar dari tab/browser, hentikan musik
-        music.pause();
-      } else {
-        // Jika pengguna kembali ke tab dan pesan sudah dibuka, lanjutkan musik
-        if (isSurpriseStarted) {
-          music.play().catch(err => console.log(err));
-        }
-      }
-    });
-  </script>
+    document.addEventListener("visibilitychange", function() {
+      if (document.hidden) {
+        music.pause();
+      } else {
+        if (isSurpriseStarted) {
+          music.play().catch(err => console.log(err));
+        }
+      }
+    });
+  </script>
 </body>
 </html>
