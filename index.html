@@ -14,51 +14,138 @@
       align-items: center;
       min-height: 100vh;
       margin: 0;
+      /* Pastikan overflow disembunyikan agar hati tidak membuat scrollbar */
+      overflow: hidden; 
+      position: relative;
     }
+
     .card {
       background: white;
       padding: 30px;
       border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
       text-align: center;
       max-width: 400px;
       width: 85%;
+      position: relative;
+      /* Pastikan kartu berada di atas hati yang melayang */
+      z-index: 10; 
     }
-    h1 { color: #ff4d6d; margin-bottom: 20px; }
-    p { font-size: 1.1rem; color: #555; line-height: 1.6; min-height: 80px; }
-    button {
+
+    h1 { color: #ff4d6d; margin-bottom: 20px; font-size: 1.8rem; }
+    p { 
+      font-size: 1.1rem; 
+      color: #555; 
+      line-height: 1.6; 
+      min-height: 80px;
+      margin-bottom: 25px;
+    }
+
+    /* Efek Kursor Ketik */
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      background-color: #ff4d6d;
+      animation: blink 0.7s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .btn-main {
       background-color: #ff4d6d;
       color: white;
       border: none;
-      padding: 12px 24px;
+      padding: 12px 28px;
       font-size: 1rem;
+      font-weight: 600;
       border-radius: 25px;
       cursor: pointer;
       transition: transform 0.2s, background-color 0.2s;
     }
-    button:hover { background-color: #ff758f; transform: scale(1.05); }
+    .btn-main:hover { background-color: #ff758f; transform: scale(1.05); }
+    .btn-main:active { transform: scale(0.98); }
+
+    /* Tombol Mute Floating Sederhana */
+    .btn-audio {
+      background-color: #fff0f3;
+      color: #ff4d6d;
+      border: 1px solid #ff4d6d;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: none; /* Sembunyi sebelum pesan dibuka */
+      margin: 0 auto;
+    }
+    .btn-audio:hover {
+      background-color: #ff4d6d;
+      color: white;
+    }
+
+    /* --- Gaya untuk Floating Hearts --- */
+    .heart {
+      position: absolute;
+      color: #ff758f; /* Warna hati melayang, sedikit lebih muda dari tema */
+      font-size: 20px;
+      user-select: none;
+      pointer-events: none; /* Hati tidak bisa diklik */
+      z-index: 1; /* Di bawah kartu */
+      animation: floatUp 5s linear forwards;
+      opacity: 0;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.8;
+      }
+      90% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-10vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
   </style>
 </head>
 <body>
 
+  <!-- Musik Latar (Pastikan file music.mp3 ada) -->
   <audio id="bg-music" src="music.mp3" loop></audio>
 
   <div class="card">
-    <h1>❤️ Special Message For You</h1>
-    <p id="text-container">Klik tombol di bawah buat buka pesannya!</p>
-    <button onclick="startSurprise()">Buka Pesan</button>
+    <h1>❤️ Special Message For You ❤️</h1>
+    <p><span id="text-container">Klik tombol di bawah buat buka pesannya!</span><span id="cursor" class="cursor" style="display:none;">&nbsp;</span></p>
+    
+    <button id="btn-open" class="btn-main" onclick="startSurprise()">Buka Pesan</button>
+    <button id="btn-audio" class="btn-audio" onclick="toggleAudio()">🔊 Musik: ON</button>
   </div>
 
   <script>
-    const message = "Halo! Makasih ya karena udah berusaha hingga sejauh ini. I'm so proud of you ❤️❤️❤️";
+    const message = "Halo! Makasih ya karena udah berusaha hingga sejauh ini. I'm so proud of youuuuuuuuu ❤️❤️❤️";
     let index = 0;
     const music = document.getElementById('bg-music');
+    const textContainer = document.getElementById('text-container');
+    const cursor = document.getElementById('cursor');
+    const btnOpen = document.getElementById('btn-open');
+    const btnAudio = document.getElementById('btn-audio');
     let isSurpriseStarted = false;
+    let heartInterval; // Untuk menyimpan interval pembuatan hati
 
     function startSurprise() {
       isSurpriseStarted = true;
-      document.querySelector('button').style.display = 'none';
-      document.getElementById('text-container').innerHTML = '';
+      btnOpen.style.display = 'none';
+      btnAudio.style.display = 'inline-block'; // Tampilkan tombol mute/unmute
+      textContainer.innerHTML = '';
+      cursor.style.display = 'inline-block';
 
       music.play().catch(err => console.log("Autoplay dicegah browser:", err));
 
@@ -69,22 +156,75 @@
       });
 
       typeWriter();
+      
+      // Mulai membuat hati melayang
+      startHearts();
     }
 
     function typeWriter() {
       if (index < message.length) {
-        document.getElementById('text-container').innerHTML += message.charAt(index);
+        textContainer.innerHTML += message.charAt(index);
         index++;
         setTimeout(typeWriter, 50);
+      } else {
+        setTimeout(() => cursor.style.display = 'none', 1500);
       }
+    }
+
+    // Fungsi Toggle Mute / Unmute
+    function toggleAudio() {
+      if (music.paused) {
+        music.play();
+        btnAudio.innerHTML = "🔊 Musik: ON";
+      } else {
+        music.pause();
+        btnAudio.innerHTML = "🔇 Musik: OFF";
+      }
+    }
+
+    // --- Logika untuk Floating Hearts ---
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.innerHTML = '❤️'; // Karakter hati
+
+      // Posisi horizontal acak
+      heart.style.left = Math.random() * 100 + 'vw';
+      
+      // Ukuran acak (antara 10px dan 30px)
+      const size = Math.random() * 20 + 10 + 'px';
+      heart.style.fontSize = size;
+      
+      // Durasi animasi acak (antara 3s dan 7s) agar bervariasi
+      const duration = Math.random() * 4 + 3 + 's';
+      heart.style.animationDuration = duration;
+
+      document.body.appendChild(heart);
+
+      // Hapus elemen hati setelah animasi selesai agar tidak menumpuk
+      setTimeout(() => {
+        heart.remove();
+      }, parseFloat(duration) * 1000);
+    }
+
+    function startHearts() {
+      // Buat hati setiap 300ms
+      heartInterval = setInterval(createHeart, 300);
     }
 
     document.addEventListener("visibilitychange", function() {
       if (document.hidden) {
         music.pause();
+        // Hentikan pembuatan hati saat tab tidak aktif
+        clearInterval(heartInterval);
       } else {
-        if (isSurpriseStarted) {
+        // Hanya play kembali jika pengguna tidak sengaja mematikan audio secara manual
+        if (isSurpriseStarted && btnAudio.innerHTML.includes("ON")) {
           music.play().catch(err => console.log(err));
+        }
+        // Mulai kembali membuat hati jika kejutan sudah dimulai
+        if (isSurpriseStarted) {
+          startHearts();
         }
       }
     });
