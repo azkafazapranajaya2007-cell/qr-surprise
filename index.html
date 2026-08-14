@@ -201,7 +201,7 @@
       100% { transform: translate(3px, -4px) rotate(-1.5deg); }
     }
 
-    /* Animasi Kartu Hancur Berkeping-keping */
+    /* Animasi Kartu Meledak / Hancur Berkeping-keping */
     .card.shatter-card {
       animation: shatterExplode 1.2s forwards ease-in !important;
       pointer-events: none;
@@ -325,9 +325,11 @@
 
   <div id="stars-container"></div>
 
+  <!-- Tag Audio Lengkap dengan Suara Ketawa Joker (laught.mp3) -->
   <audio id="bg-music" loop preload="auto"><source src="music.mp3" type="audio/mpeg"></audio>
   <audio id="sfx-click" preload="auto"><source src="click.mp3" type="audio/mpeg"></audio>
   <audio id="sfx-kiss" preload="auto"><source src="kiss.mp3" type="audio/mpeg"></audio>
+  <audio id="sfx-laugh" preload="auto"><source src="laught.mp3" type="audio/mpeg"></audio>
 
   <button id="btn-audio" onclick="toggleMusic()">🔊 Musik: ON</button>
 
@@ -411,13 +413,14 @@
         const soundClone = sfx.cloneNode(true);
         soundClone.volume = 1.0;
         soundClone.play().catch(err => {
-          playFallbackBeep(elementId === 'sfx-kiss' ? 900 : 500, 0.15);
+          playFallbackBeep(elementId === 'sfx-kiss' ? 900 : (elementId === 'sfx-laugh' ? 300 : 500), 0.2);
         });
       }
     }
 
     function transformJokerToEnvelope() {
-      playSFX('sfx-click');
+      // 1. Putar efek suara ketawa Joker saat kartu Joker diklik
+      playSFX('sfx-laugh');
       jokerCard.classList.add('morph-to-envelope');
       
       setTimeout(() => {
@@ -488,10 +491,13 @@
 
       typedMessage.classList.add('fade-out');
 
-      // Reset semua kelas efek sebelumnya
+      // Reset semua kelas efek animasi sebelumnya
       mainCard.classList.remove('anim-love', 'anim-rage', 'anim-peace', 'damaged-card', 'disintegrate-ash', 'shatter-card');
 
       setTimeout(() => {
+        /* --- 2. VARIASI ANIMASI PILIHAN --- */
+
+        // Opsi 1: Menyayangi
         if (option === 'Menyayangi') {
           document.body.className = 'theme-love';
           mainCard.classList.add('anim-love');
@@ -503,6 +509,7 @@
             colors: ['#ff4081', '#f8bbd0', '#e91e63', '#ff80ab']
           });
         } 
+        // Opsi 2: Melampiaskan
         else if (option === 'Melampiaskan') {
           document.body.className = 'theme-rage';
           mainCard.classList.add('anim-rage', 'damaged-card');
@@ -515,12 +522,13 @@
             colors: ['#8e24aa', '#d50000', '#4a148c', '#ff1744']
           });
 
-          // Efek Hancur Berkeping-keping setelah diguncang sebentar (2.5 detik)
+          // Efek hancur berkeping-keping (meledak) setelah getaran hebat (2.5 detik)
           setTimeout(() => {
             mainCard.classList.remove('anim-rage');
             mainCard.classList.add('shatter-card');
           }, 2500);
         } 
+        // Opsi 3: Merelakan
         else if (option === 'Merelakan') {
           document.body.className = 'theme-peace';
           mainCard.classList.add('anim-peace');
@@ -532,6 +540,7 @@
             colors: ['#ffffff', '#cfd8dc', '#90a4ae', '#b0bec5']
           });
 
+          // Efek pudar dan hancur menjadi debu (3.5 detik)
           setTimeout(() => {
             mainCard.classList.add('disintegrate-ash');
           }, 3500);
