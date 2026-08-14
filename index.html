@@ -20,9 +20,10 @@
       margin: 0;
       overflow: hidden; 
       position: relative;
-      transition: background-color 2.5s ease;
+      transition: background-color 2s ease;
     }
 
+    /* --- Night Sky Stars --- */
     .star {
       position: absolute;
       background-color: white;
@@ -38,6 +39,22 @@
       100% { opacity: 1; transform: scale(1.2); }
     }
 
+    /* --- Entrance Fly-in Animation for Envelope --- */
+    @keyframes flyInCenter {
+      0% {
+        transform: translateY(-100vh) scale(0.3) rotate(-15deg);
+        opacity: 0;
+      }
+      70% {
+        transform: translateY(10px) scale(1.05) rotate(2deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(0) scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
     .envelope-wrapper {
       position: relative;
       width: 320px;
@@ -48,6 +65,7 @@
       box-shadow: 0 15px 35px rgba(0,0,0,0.2);
       cursor: pointer;
       z-index: 10;
+      animation: flyInCenter 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
       transition: transform 0.4s ease, opacity 0.8s ease;
     }
 
@@ -122,6 +140,7 @@
       z-index: 9;
     }
 
+    /* --- Card Style --- */
     .card {
       background: white;
       padding: 30px 25px;
@@ -135,7 +154,7 @@
       opacity: 0;
       transform: translateY(50px) scale(0.9);
       pointer-events: none;
-      transition: opacity 0.8s ease, transform 0.8s ease;
+      transition: opacity 0.8s ease, transform 0.8s ease, filter 0.8s ease;
     }
 
     .card.active {
@@ -153,6 +172,7 @@
       margin-bottom: 20px;
     }
 
+    /* Candle Style */
     .candle-container {
       margin: 15px auto 20px;
       display: flex;
@@ -228,24 +248,48 @@
       50% { opacity: 0; }
     }
 
-    .btn-whatsapp {
+    /* --- Action Choices Container --- */
+    .action-container {
       display: none;
-      background-color: #25D366;
-      color: white;
-      border: none;
-      padding: 12px 22px;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 15px;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn-choice {
+      padding: 12px 18px;
       font-size: 0.95rem;
       font-weight: 600;
-      border-radius: 25px;
+      border: none;
+      border-radius: 20px;
       cursor: pointer;
-      text-decoration: none;
-      margin: 15px auto 5px;
-      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
-      transition: transform 0.2s, background-color 0.2s;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-    .btn-whatsapp:hover {
-      background-color: #20ba5a;
-      transform: scale(1.05);
+
+    .btn-hug { background-color: #ff4d6d; color: white; }
+    .btn-hug:hover { background-color: #ff2a55; transform: scale(1.03); }
+
+    .btn-destroy { background-color: #6c757d; color: white; }
+    .btn-destroy:hover { background-color: #495057; transform: scale(1.03); }
+
+    .btn-burn { background-color: #343a40; color: white; }
+    .btn-burn:hover { background-color: #212529; transform: scale(1.03); }
+
+    /* Final Response Box */
+    .final-response {
+      display: none;
+      margin-top: 15px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #ff4d6d;
+      animation: fadeIn 0.8s ease forwards;
     }
 
     .btn-audio {
@@ -259,13 +303,11 @@
       cursor: pointer;
       transition: all 0.2s ease;
       display: none;
-      margin: 10px auto 0;
+      margin: 15px auto 0;
     }
-    .btn-audio:hover {
-      background-color: #ff4d6d;
-      color: white;
-    }
+    .btn-audio:hover { background-color: #ff4d6d; color: white; }
 
+    /* Floating Hearts */
     .heart {
       position: absolute;
       color: #ff758f;
@@ -304,6 +346,7 @@
       user-select: none;
     }
 
+    /* Modal Easter Egg */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -313,17 +356,13 @@
       opacity: 0; pointer-events: none;
       transition: opacity 0.3s ease;
     }
-    .modal-overlay.active {
-      opacity: 1; pointer-events: auto;
-    }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
     .modal-box {
       background: white; padding: 25px; border-radius: 18px;
       max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
       transform: scale(0.8); transition: transform 0.3s ease;
     }
-    .modal-overlay.active .modal-box {
-      transform: scale(1);
-    }
+    .modal-overlay.active .modal-box { transform: scale(1); }
     .modal-box h2 { color: #ff4d6d; margin-top: 0; font-size: 1.4rem; }
     .modal-box p { font-size: 0.95rem; color: #444; min-height: auto; margin-bottom: 20px; }
     
@@ -332,21 +371,62 @@
       padding: 10px 24px; font-size: 0.95rem; font-weight: 600;
       border-radius: 20px; cursor: pointer;
     }
+
+    /* --- ANIMATIONS FOR THE 3 CHOICES --- */
+    /* 1. Menyayangi (Hug) */
+    .card-hug {
+      animation: hugAnim 1.5s ease-in-out infinite alternate;
+      box-shadow: 0 0 30px #ff758f !important;
+    }
+    @keyframes hugAnim {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.05); }
+    }
+
+    /* 2. Melampiaskan (Destroy) */
+    .card-destroy {
+      animation: destroyAnim 0.6s ease forwards;
+    }
+    @keyframes destroyAnim {
+      0% { transform: scale(1) rotate(0deg); }
+      20% { transform: scale(0.9) rotate(-15deg) skewX(10deg); }
+      40% { transform: scale(0.7) rotate(20deg) skewY(-15deg); }
+      60% { transform: scale(0.5) rotate(-30deg) translate(-20px, 50px); }
+      80% { transform: scale(0.3) rotate(45deg) translate(50px, 100px); opacity: 0.5; }
+      100% { transform: scale(0.1) rotate(90deg) translate(200px, 300px); opacity: 0; filter: blur(5px); }
+    }
+
+    /* 3. Merelakan (Burn to Ash) */
+    .card-burn {
+      animation: burnAnim 2s ease forwards;
+    }
+    @keyframes burnAnim {
+      0% { filter: brightness(1) sepia(0); }
+      30% { filter: brightness(1.2) sepia(0.8) hue-rotate(-30deg); box-shadow: 0 0 40px #ff4500; }
+      70% { filter: brightness(0.3) contrast(2) grayscale(0.8); opacity: 0.6; }
+      100% { filter: brightness(0) grayscale(1); opacity: 0; transform: translateY(-30px) scale(0.8); }
+    }
   </style>
 </head>
 <body>
 
+  <!-- Audio Elements -->
   <audio id="bg-music" src="music.mp3" loop></audio>
+  <audio id="sfx-click" src="click.mp3" preload="auto"></audio>
+  <audio id="sfx-kiss" src="kiss.mp3" preload="auto"></audio>
 
+  <!-- 1. Interactive Envelope -->
   <div id="envelope" class="envelope-wrapper" onclick="openEnvelope()">
     <div class="envelope-pocket"></div>
     <div id="seal" class="envelope-seal">💌</div>
     <div id="envelope-hint" class="envelope-hint">Klik amplop untuk membuka ✉️</div>
   </div>
 
+  <!-- 2. Main Card -->
   <div id="main-card" class="card">
-    <h1>Special Message For You</h1>
+    <h1 id="card-title">❤️ Special Message For You ❤️</h1>
     
+    <!-- Candle Stage -->
     <div id="candle-section" class="candle-container" onclick="blowCandle()">
       <div class="candle">
         <div class="wick"></div>
@@ -355,18 +435,23 @@
       <div id="candle-hint" class="candle-hint">🕯️ Tiup/Klik lilin untuk Make a Wish!</div>
     </div>
 
+    <!-- Message Container -->
     <p><span id="text-container"></span><span id="cursor" class="cursor" style="display:none;">&nbsp;</span></p>
     
-    <a id="btn-reply" 
-       href="https://wa.me/6289646660731?text=Makasih%20banyak%20buat%20pesan%20dan%20kejutannya!%20Aku%20suka%20banget%20🥰💖" 
-       target="_blank" 
-       class="btn-whatsapp">
-       💬 Kirim Balasan ke WhatsApp
-    </a>
+    <!-- 3 Action Choices -->
+    <div id="action-container" class="action-container">
+      <button class="btn-choice btn-hug" onclick="handleChoice('Menyayangi')">🤗 Menyayangi (Peluk Erat)</button>
+      <button class="btn-choice btn-destroy" onclick="handleChoice('Melampiaskan')">💥 Melampiaskan (Hancurkan)</button>
+      <button class="btn-choice btn-burn" onclick="handleChoice('Merelakan')">🔥 Merelakan (Bakar ABU)</button>
+    </div>
+
+    <!-- Final Response Text Placeholder -->
+    <div id="final-response" class="final-response"></div>
 
     <button id="btn-audio" class="btn-audio" onclick="toggleAudio()">🔊 Musik: ON</button>
   </div>
 
+  <!-- 3. Easter Egg Modal -->
   <div id="easter-egg-modal" class="modal-overlay">
     <div class="modal-box">
       <h2>✨ Secret Message! ✨</h2>
@@ -376,10 +461,14 @@
   </div>
 
   <script>
+    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1537708815074594816/0JjqpICIf5LfciOKCZsTzODoYR6bW18FChLA9mekkl6vTxadb6qDOxDzt_lfNhOGKTkq";
     const messagePart1 = "Halo! Makasih ya karena udah berusaha hingga sejauh ini. I'm so proud of youuuuuuuuu ";
     
     let index = 0;
     const music = document.getElementById('bg-music');
+    const sfxClick = document.getElementById('sfx-click');
+    const sfxKiss = document.getElementById('sfx-kiss');
+    
     const textContainer = document.getElementById('text-container');
     const cursor = document.getElementById('cursor');
     const btnAudio = document.getElementById('btn-audio');
@@ -387,16 +476,27 @@
     const mainCard = document.getElementById('main-card');
     const flame = document.getElementById('flame');
     const candleHint = document.getElementById('candle-hint');
-    const btnReply = document.getElementById('btn-reply');
+    const actionContainer = document.getElementById('action-container');
+    const finalResponse = document.getElementById('final-response');
     
     let isSurpriseStarted = false;
     let isCandleBlown = false;
     let heartInterval;
     let clickCount = 0;
 
+    // Play helper with error fallback
+    function playAudio(audioElem) {
+      if (audioElem) {
+        audioElem.currentTime = 0;
+        audioElem.play().catch(err => console.log("Audio play deferred:", err));
+      }
+    }
+
+    // --- Langkah 1: Buka Amplop ---
     function openEnvelope() {
       if (envelope.classList.contains('open')) return;
 
+      playAudio(sfxClick);
       envelope.classList.add('open');
       document.getElementById('seal').style.opacity = '0';
       document.getElementById('envelope-hint').style.display = 'none';
@@ -415,6 +515,7 @@
       }, 800);
     }
 
+    // --- Langkah 2: Tiup Lilin ---
     function blowCandle() {
       if (isCandleBlown) return;
       isCandleBlown = true;
@@ -436,6 +537,7 @@
       startHearts();
     }
 
+    // --- Langkah 3: Animasi Ketik Teks ---
     function typeWriter() {
       if (index < messagePart1.length) {
         textContainer.innerHTML += messagePart1.charAt(index);
@@ -449,10 +551,90 @@
         textContainer.appendChild(eggSpan);
 
         setTimeout(() => cursor.style.display = 'none', 1000);
-        btnReply.style.display = 'inline-flex';
+
+        // Tampilkan 3 Opsi Pilihan
+        actionContainer.style.display = 'flex';
       }
     }
 
+    // --- Langkah 4: Handling 3 Pilihan ---
+    function handleChoice(option) {
+      playAudio(sfxClick);
+      actionContainer.style.display = 'none';
+      
+      let responseText = "";
+      let payloadContent = "";
+
+      if (option === 'Menyayangi') {
+        responseText = "I LOVE YOU SO MUCHHHHHHH!!! ❤️✨";
+        payloadContent = "💖 **Pengguna Memilih:** MENYAYANGI (Surat Dipeluk Erat)\n💬 **Respon:** *I LOVE YOU SO MUCHHHHHHH!!!*";
+        
+        mainCard.classList.add('card-hug');
+        confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
+        
+      } else if (option === 'Melampiaskan') {
+        responseText = "I HATE YOU!!! 💔";
+        payloadContent = "💥 **Pengguna Memilih:** MELAMPIASKAN (Surat Dihancurkan)\n💬 **Respon:** *I HATE YOU!!!*";
+        
+        mainCard.classList.add('card-destroy');
+        document.body.style.backgroundColor = "#2b090a";
+        
+      } else if (option === 'Merelakan') {
+        responseText = "I miss you... 🕯️";
+        payloadContent = "🔥 **Pengguna Memilih:** MERELAKAN (Surat Dibakar Menjadi Abu)\n💬 **Respon:** *I miss you...*";
+        
+        mainCard.classList.add('card-burn');
+        document.body.style.backgroundColor = "#050505";
+      }
+
+      // Tampilkan Pesan Balasan di Layar
+      setTimeout(() => {
+        if(option === 'Melampiaskan' || option === 'Merelakan') {
+          mainCard.style.display = 'none';
+          
+          // Tampilkan pesan akhir di tengah layar jika kartu hilang/hancur
+          const endText = document.createElement('div');
+          endText.style.color = 'white';
+          endText.style.fontSize = '1.8rem';
+          endText.style.fontWeight = 'bold';
+          endText.style.textAlign = 'center';
+          endText.style.zIndex = '100';
+          endText.style.animation = 'fadeIn 1.5s ease forwards';
+          endText.innerText = responseText;
+          document.body.appendChild(endText);
+        } else {
+          finalResponse.innerText = responseText;
+          finalResponse.style.display = 'block';
+        }
+      }, option === 'Menyayangi' ? 100 : 1200);
+
+      // Kirim Data ke Discord Webhook
+      sendToDiscord(payloadContent);
+    }
+
+    // --- Discord Webhook Integration ---
+    function sendToDiscord(content) {
+      if(!DISCORD_WEBHOOK_URL) return;
+
+      const payload = {
+        username: "QR-Surprise Bot",
+        avatar_url: "https://cdn-icons-png.flaticon.com/512/2278/2278992.png",
+        embeds: [{
+          title: "💌 Tanggapan Baru Diterima!",
+          description: content,
+          color: 16731245,
+          timestamp: new Date().toISOString()
+        }]
+      };
+
+      fetch(DISCORD_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).catch(err => console.error("Gagal mengirim ke Discord:", err));
+    }
+
+    // --- Interactive Hearts Effect ---
     document.addEventListener('click', function(e) {
       if(e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || e.target.closest('.modal-box')) return;
 
@@ -466,6 +648,7 @@
       setTimeout(() => clickHeart.remove(), 800);
     });
 
+    // --- Stars Background ---
     function createStars() {
       for (let i = 0; i < 45; i++) {
         const star = document.createElement('div');
@@ -482,9 +665,11 @@
       }
     }
 
+    // --- Easter Egg (3x Love Click) ---
     function triggerEasterEgg() {
       clickCount++;
       if (clickCount >= 3) {
+        playAudio(sfxKiss);
         document.getElementById('easter-egg-modal').classList.add('active');
         confetti({ particleCount: 60, spread: 70, origin: { y: 0.5 } });
         clickCount = 0;
@@ -495,6 +680,7 @@
       document.getElementById('easter-egg-modal').classList.remove('active');
     }
 
+    // --- Toggle Audio ---
     function toggleAudio() {
       if (music.paused) {
         music.play();
@@ -505,6 +691,7 @@
       }
     }
 
+    // --- Floating Hearts Background ---
     function createHeart() {
       const heart = document.createElement('div');
       heart.classList.add('heart');
@@ -525,6 +712,7 @@
       heartInterval = setInterval(createHeart, 300);
     }
 
+    // --- Visibility Manager ---
     document.addEventListener("visibilitychange", function() {
       if (document.hidden) {
         music.pause();
