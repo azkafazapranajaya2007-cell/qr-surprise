@@ -23,8 +23,21 @@
       justify-content: center;
       align-items: center;
       overflow-x: hidden;
-      transition: background-color 1.5s ease;
+      transition: background-color 1.5s ease, filter 0.8s ease;
       position: relative;
+    }
+
+    /* --- Keyframe Animations --- */
+    @keyframes shake {
+      0%, 100% { transform: translate(0, 0); }
+      20% { transform: translate(-10px, 5px) rotate(-2deg); }
+      40% { transform: translate(10px, -5px) rotate(2deg); }
+      60% { transform: translate(-8px, 3px) rotate(-1deg); }
+      80% { transform: translate(8px, -3px) rotate(1deg); }
+    }
+
+    .shake-effect {
+      animation: shake 0.5s ease-in-out;
     }
 
     /* --- Stars Background --- */
@@ -233,6 +246,7 @@
       line-height: 1.6;
       min-height: 80px;
       margin: 15px 0;
+      transition: opacity 0.5s ease;
     }
 
     /* Action Buttons */
@@ -325,9 +339,17 @@
 
   <div id="stars-container"></div>
 
-  <!-- Main Background Music -->
-  <audio id="bg-music" loop>
+  <!-- Audio Elements Preloaded -->
+  <audio id="bg-music" loop preload="auto">
     <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <audio id="sfx-click" preload="auto">
+    <source src="click.mp3" type="audio/mpeg">
+  </audio>
+
+  <audio id="sfx-kiss" preload="auto">
+    <source src="kiss.mp3" type="audio/mpeg">
   </audio>
 
   <button id="btn-audio" onclick="toggleMusic()">🔊 Musik: ON</button>
@@ -383,21 +405,22 @@
     let clickCount = 0;
     const fullText = "Setiap langkah dan momen membawa cerita tersendiri. Terima kasih sudah menjadi bagian dari perjalanan ini. Apapun pilihanmu ke depan, semoga kebahagiaan selalu menyertaimu.";
 
-    // WEBHOOK DISCORD URL
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1392817028485255280/lG2HBy7S_9Ld8m57_E_m-2U9a3jCllc435aRrt1m3T1f4U-q6XwK40mC3n7gK4S1nS5v";
 
-    // Helper audio instan khusus SFX
-    function playSFX(filename) {
-      const sfx = new Audio(filename);
-      sfx.volume = 1.0;
-      sfx.play().catch(err => console.log("SFX play blocked or deferred:", err));
+    // FUNGSI SFX HANDLER YANG LEBIH STABIL
+    function playSFX(elementId) {
+      const sfx = document.getElementById(elementId);
+      if (sfx) {
+        const soundClone = sfx.cloneNode(true); // Biar bisa di-play berkali-kali tanpa overlap bug
+        soundClone.volume = 1.0;
+        soundClone.play().catch(err => console.log("SFX play blocked or error:", err));
+      }
     }
 
-    // Fungsi Buka Amplop
     function openEnvelope() {
       if (envelope.classList.contains('open')) return;
 
-      playSFX('click.mp3');
+      playSFX('sfx-click');
       envelope.classList.add('open');
       document.getElementById('seal').style.opacity = '0';
       document.getElementById('envelope-hint').style.display = 'none';
@@ -416,7 +439,6 @@
       }, 800);
     }
 
-    // Toggle Play/Pause Musik Utama
     function toggleMusic() {
       if (music.paused) {
         music.play();
@@ -427,20 +449,18 @@
       }
     }
 
-    // Matikan Lilin & Mulai Pengetikan Pesan Otomatis
     function extinguishCandle() {
       if (isCandleOut) return;
       isCandleOut = true;
       flame.classList.add('out');
       document.getElementById('candle-hint').innerText = "✨ Request terkirim ke langit...";
 
-      playSFX('click.mp3');
+      playSFX('sfx-click');
       confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
 
       setTimeout(typeWriter, 500);
     }
 
-    // Efek Typing Teks
     let charIndex = 0;
     function typeWriter() {
       if (charIndex < fullText.length) {
@@ -452,14 +472,46 @@
       }
     }
 
-    // Fungsi Opsi Pilihan (Kirim ke Discord Embed Webhook)
     function handleChoice(option) {
-      playSFX('click.mp3');
+      playSFX('sfx-click');
       actionContainer.style.display = 'none';
 
-      typedMessage.innerHTML = `<em>Pilihanmu (${option}) telah tersampaikan. Terima kasih... ❤️</em>`;
+      if (option === 'Menyayangi') {
+        document.body.style.backgroundColor = "#2b0a1a";
+        confetti({
+          particleCount: 150,
+          spread: 100,
+          origin: { y: 0.6 },
+          colors: ['#ff4081', '#f8bbd0', '#e91e63']
+        });
+      } else if (option === 'Melampiaskan') {
+        document.body.style.backgroundColor = "#1a0000";
+        mainCard.classList.add('shake-effect');
+        setTimeout(() => mainCard.classList.remove('shake-effect'), 600);
+        
+        confetti({
+          particleCount: 100,
+          spread: 120,
+          startVelocity: 45,
+          origin: { y: 0.6 },
+          colors: ['#ab47bc', '#4a148c', '#ff1744']
+        });
+      } else if (option === 'Merelakan') {
+        document.body.style.backgroundColor = "#121212";
+        confetti({
+          particleCount: 60,
+          spread: 50,
+          origin: { y: 0.6 },
+          colors: ['#cfd8dc', '#78909c', '#ffffff']
+        });
+      }
 
-      // Kirim Embed ke Discord
+      typedMessage.style.opacity = '0';
+      setTimeout(() => {
+        typedMessage.innerHTML = `<em>Pilihanmu (${option}) telah tersampaikan. Terima kasih... ❤️</em>`;
+        typedMessage.style.opacity = '1';
+      }, 400);
+
       fetch(DISCORD_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -473,15 +525,12 @@
           }]
         })
       }).catch(err => console.log("Webhook error:", err));
-
-      confetti({ particleCount: 120, spread: 100, origin: { y: 0.6 } });
     }
 
-    // Fungsi Easter Egg
     function triggerEasterEgg() {
       clickCount++;
       if (clickCount >= 3) {
-        playSFX('kiss.mp3');
+        playSFX('sfx-kiss');
         document.getElementById('easter-egg-modal').classList.add('active');
         confetti({ particleCount: 60, spread: 70, origin: { y: 0.5 } });
         clickCount = 0;
@@ -489,10 +538,10 @@
     }
 
     function closeModal() {
+      playSFX('sfx-click');
       document.getElementById('easter-egg-modal').classList.remove('active');
     }
 
-    // Latar Bintang Malam
     function createStars() {
       const container = document.getElementById('stars-container');
       for (let i = 0; i < 50; i++) {
@@ -508,7 +557,6 @@
       }
     }
 
-    // Heart Particle saat Layar Di-klik
     document.addEventListener('click', function(e) {
       if (e.target.tagName === 'BUTTON' || e.target.classList.contains('envelope-wrapper')) return;
       
@@ -522,7 +570,6 @@
       setTimeout(() => heart.remove(), 1000);
     });
 
-    // Pause Musik jika Pindah Tab Browser
     document.addEventListener("visibilitychange", function() {
       if (document.hidden) {
         music.pause();
