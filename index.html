@@ -4,16 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>A Special Message for You</title>
-  <!-- Google Fonts & Canvas Confetti -->
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       background-color: #fce4ec;
@@ -22,42 +17,81 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow-x: hidden;
-      transition: background-color 1.5s ease, filter 0.8s ease;
+      overflow: hidden;
+      transition: background-color 1.2s ease;
       position: relative;
     }
 
-    /* --- Keyframe Animations --- */
-    @keyframes shake {
-      0%, 100% { transform: translate(0, 0); }
-      20% { transform: translate(-10px, 5px) rotate(-2deg); }
-      40% { transform: translate(10px, -5px) rotate(2deg); }
-      60% { transform: translate(-8px, 3px) rotate(-1deg); }
-      80% { transform: translate(8px, -3px) rotate(1deg); }
+    /* --- ANIMASI KHUSUS TIAP PILIHAN --- */
+    
+    /* 1. Menyayangi: Glow Pink Warm & Hearts */
+    body.theme-love {
+      background-color: #2b0a1a !important;
+    }
+    .card.anim-love {
+      animation: pulseLove 1.5s infinite alternate;
+      border: 2px solid #ff4081;
+      box-shadow: 0 0 30px rgba(255, 64, 129, 0.6);
+    }
+    @keyframes pulseLove {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.03); }
     }
 
-    .shake-effect {
-      animation: shake 0.5s ease-in-out;
+    /* 2. Melampiaskan: Shaking Intense & Flash Red */
+    body.theme-rage {
+      background-color: #1a0000 !important;
+    }
+    .card.anim-rage {
+      animation: rageShake 0.1s infinite;
+      border: 2px solid #ff1744;
+      box-shadow: 0 0 35px rgba(255, 23, 68, 0.8);
+    }
+    @keyframes rageShake {
+      0% { transform: translate(2px, 2px) rotate(0deg); }
+      20% { transform: translate(-3px, 0px) rotate(1deg); }
+      40% { transform: translate(1px, -1px) rotate(-1deg); }
+      60% { transform: translate(-2px, 2px) rotate(0deg); }
+      80% { transform: translate(3px, 1px) rotate(1deg); }
+      100% { transform: translate(1px, -2px) rotate(-1deg); }
+    }
+
+    /* 3. Merelakan: Slow Fade & Cold Blue/Gray */
+    body.theme-peace {
+      background-color: #0b1325 !important;
+    }
+    .card.anim-peace {
+      animation: floatPeace 3s ease-in-out infinite;
+      border: 1px solid #78909c;
+      box-shadow: 0 0 25px rgba(207, 216, 220, 0.3);
+      filter: grayscale(30%);
+    }
+    @keyframes floatPeace {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Transition Effect saat tombol diklik */
+    .fade-out {
+      opacity: 0;
+      transform: scale(0.9) !important;
+      transition: all 0.5s ease;
+    }
+    .fade-in {
+      opacity: 1;
+      transform: scale(1) !important;
+      transition: all 0.8s ease;
     }
 
     /* --- Stars Background --- */
     #stars-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 0;
     }
-
     .star {
-      position: absolute;
-      background: white;
-      border-radius: 50%;
+      position: absolute; background: white; border-radius: 50%;
       animation: twinkle linear infinite;
     }
-
     @keyframes twinkle {
       0%, 100% { opacity: 0.2; transform: scale(0.8); }
       50% { opacity: 1; transform: scale(1.2); }
@@ -65,296 +99,105 @@
 
     /* --- Audio Toggle Button --- */
     #btn-audio {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 100;
-      background: rgba(255, 255, 255, 0.25);
-      backdrop-filter: blur(5px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      color: #fff;
-      padding: 8px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      display: none;
-      transition: all 0.3s;
-    }
-
-    #btn-audio:hover {
-      background: rgba(255, 255, 255, 0.4);
+      position: fixed; top: 20px; right: 20px; z-index: 100;
+      background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.4); color: #fff;
+      padding: 8px 16px; border-radius: 20px; cursor: pointer;
+      font-size: 0.85rem; display: none; transition: all 0.3s;
     }
 
     /* --- Envelope Wrapper --- */
     .envelope-wrapper {
-      position: relative;
-      width: 300px;
-      height: 200px;
-      background-color: #f48fb1;
-      border-bottom-left-radius: 10px;
-      border-bottom-right-radius: 10px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-      cursor: pointer;
-      z-index: 10;
-      transition: transform 0.3s ease, opacity 0.8s ease;
+      position: relative; width: 300px; height: 200px;
+      background-color: #f48fb1; border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px; box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      cursor: pointer; z-index: 10; transition: transform 0.3s ease, opacity 0.8s ease;
     }
-
-    .envelope-wrapper:hover {
-      transform: translateY(-5px);
-    }
-
     .envelope-flap {
-      position: absolute;
-      top: 0;
-      left: 0;
-      border-left: 150px solid transparent;
-      border-right: 150px solid transparent;
-      border-top: 110px solid #f06292;
-      transform-origin: top;
-      transition: transform 0.6s ease 0.2s, z-index 0.2s ease 0.2s;
-      z-index: 3;
+      position: absolute; top: 0; left: 0;
+      border-left: 150px solid transparent; border-right: 150px solid transparent;
+      border-top: 110px solid #f06292; transform-origin: top;
+      transition: transform 0.6s ease 0.2s, z-index 0.2s ease 0.2s; z-index: 3;
     }
-
     .envelope-pocket {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 0;
-      border-left: 150px solid #f48fb1;
-      border-right: 150px solid #f48fb1;
-      border-bottom: 100px solid #ec407a;
-      border-bottom-left-radius: 10px;
-      border-bottom-right-radius: 10px;
-      z-index: 2;
+      position: absolute; bottom: 0; left: 0; width: 0; height: 0;
+      border-left: 150px solid #f48fb1; border-right: 150px solid #f48fb1;
+      border-bottom: 100px solid #ec407a; border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px; z-index: 2;
     }
-
     .envelope-seal {
-      position: absolute;
-      top: 90px;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 45px;
-      height: 45px;
-      background: #d81b60;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      font-size: 20px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      z-index: 4;
-      transition: opacity 0.4s;
+      position: absolute; top: 90px; left: 50%; transform: translate(-50%, -50%);
+      width: 45px; height: 45px; background: #d81b60; border-radius: 50%;
+      display: flex; justify-content: center; align-items: center; color: white;
+      font-size: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 4; transition: opacity 0.4s;
     }
-
     .envelope-wrapper.open .envelope-flap {
-      transform: rotateX(180deg);
-      z-index: 1;
+      transform: rotateX(180deg); z-index: 1;
     }
-
     .hint-text {
-      position: absolute;
-      bottom: -40px;
-      width: 100%;
-      text-align: center;
-      color: #888;
-      font-size: 0.9rem;
-      animation: pulse 1.5s infinite;
+      position: absolute; bottom: -40px; width: 100%; text-align: center;
+      color: #888; font-size: 0.9rem; animation: pulse 1.5s infinite;
     }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.6; }
-      50% { opacity: 1; }
-    }
+    @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
 
     /* --- Interactive Card --- */
     .card {
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(10px);
-      width: 90%;
-      max-width: 420px;
-      padding: 35px 25px;
-      border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-      text-align: center;
-      opacity: 0;
-      transform: scale(0.8) translateY(30px);
-      pointer-events: none;
+      background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(10px);
+      width: 90%; max-width: 420px; padding: 35px 25px; border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3); text-align: center;
+      opacity: 0; transform: scale(0.8) translateY(30px); pointer-events: none;
       transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      position: absolute;
-      z-index: 20;
+      position: absolute; z-index: 20;
     }
-
     .card.active {
-      opacity: 1;
-      transform: scale(1) translateY(0);
-      pointer-events: auto;
+      opacity: 1; transform: scale(1) translateY(0); pointer-events: auto;
     }
-
     .card h1 {
-      font-family: 'Dancing Script', cursive;
-      font-size: 2.3rem;
-      color: #d81b60;
-      margin-bottom: 15px;
+      font-family: 'Dancing Script', cursive; font-size: 2.3rem; color: #d81b60; margin-bottom: 15px;
     }
 
     /* Candle Animation */
-    .candle-container {
-      margin: 15px auto;
-      width: 40px;
-      height: 60px;
-      position: relative;
-      cursor: pointer;
-    }
+    .candle-container { margin: 15px auto; width: 40px; height: 60px; position: relative; cursor: pointer; }
+    .candle-body { width: 24px; height: 45px; background: linear-gradient(to bottom, #ff80ab, #f50057); border-radius: 4px; position: absolute; bottom: 0; left: 8px; }
+    .flame { width: 12px; height: 20px; background: #ff9800; border-radius: 50% 50% 20% 20%; position: absolute; top: -2px; left: 14px; box-shadow: 0 0 12px #ff9800; animation: flicker 0.1s infinite alternate; transition: opacity 0.5s ease; }
+    @keyframes flicker { 0% { transform: scale(1) rotate(-2deg); } 100% { transform: scale(1.1) rotate(2deg); opacity: 0.8; } }
+    .flame.out { opacity: 0; }
 
-    .candle-body {
-      width: 24px;
-      height: 45px;
-      background: linear-gradient(to bottom, #ff80ab, #f50057);
-      border-radius: 4px;
-      position: absolute;
-      bottom: 0;
-      left: 8px;
-    }
-
-    .flame {
-      width: 12px;
-      height: 20px;
-      background: #ff9800;
-      border-radius: 50% 50% 20% 20%;
-      position: absolute;
-      top: -2px;
-      left: 14px;
-      box-shadow: 0 0 12px #ff9800;
-      animation: flicker 0.1s infinite alternate;
-      transition: opacity 0.5s ease;
-    }
-
-    @keyframes flicker {
-      0% { transform: scale(1) rotate(-2deg); }
-      100% { transform: scale(1.1) rotate(2deg); opacity: 0.8; }
-    }
-
-    .flame.out {
-      opacity: 0;
-    }
-
-    .message-text {
-      font-size: 0.95rem;
-      color: #333;
-      line-height: 1.6;
-      min-height: 80px;
-      margin: 15px 0;
-      transition: opacity 0.5s ease;
-    }
+    .message-text { font-size: 0.95rem; color: #333; line-height: 1.6; min-height: 80px; margin: 15px 0; transition: opacity 0.5s ease; }
 
     /* Action Buttons */
-    .action-buttons {
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 20px;
-      opacity: 0;
-      transition: opacity 0.6s ease;
-    }
+    .action-buttons { display: none; flex-direction: column; gap: 10px; margin-top: 20px; opacity: 0; transition: opacity 0.6s ease; }
+    .action-buttons.show { display: flex; opacity: 1; }
 
-    .action-buttons.show {
-      display: flex;
-      opacity: 1;
-    }
-
-    .btn-choice {
-      padding: 12px;
-      border: none;
-      border-radius: 12px;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .btn-choice:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-    }
-
+    .btn-choice { padding: 12px; border: none; border-radius: 12px; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+    .btn-choice:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.15); }
     .btn-1 { background-color: #f8bbd0; color: #880e4f; }
     .btn-2 { background-color: #e1bee7; color: #4a148c; }
     .btn-3 { background-color: #cfd8dc; color: #263238; }
 
     /* Modal / Easter Egg */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(4px);
-      justify-content: center;
-      align-items: center;
-      z-index: 200;
-    }
-
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 200; }
     .modal.active { display: flex; }
+    .modal-content { background: white; padding: 25px; border-radius: 15px; max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
 
-    .modal-content {
-      background: white;
-      padding: 25px;
-      border-radius: 15px;
-      max-width: 320px;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    }
+    .interactive-heart { font-size: 2rem; cursor: pointer; user-select: none; display: inline-block; transition: transform 0.2s; }
+    .interactive-heart:active { transform: scale(1.3); }
 
-    .interactive-heart {
-      font-size: 2rem;
-      cursor: pointer;
-      user-select: none;
-      display: inline-block;
-      transition: transform 0.2s;
-    }
-
-    .interactive-heart:active {
-      transform: scale(1.3);
-    }
-
-    /* Particle Heart on Click */
-    .click-heart {
-      position: fixed;
-      pointer-events: none;
-      color: #ff4081;
-      font-size: 1.2rem;
-      animation: floatUp 1s forwards ease-out;
-      z-index: 300;
-    }
-
-    @keyframes floatUp {
-      0% { opacity: 1; transform: translateY(0) scale(1); }
-      100% { opacity: 0; transform: translateY(-50px) scale(1.5); }
-    }
+    .click-heart { position: fixed; pointer-events: none; color: #ff4081; font-size: 1.2rem; animation: floatUp 1s forwards ease-out; z-index: 300; }
+    @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-50px) scale(1.5); } }
   </style>
 </head>
 <body>
 
   <div id="stars-container"></div>
 
-  <!-- Audio Elements Preloaded -->
-  <audio id="bg-music" loop preload="auto">
-    <source src="music.mp3" type="audio/mpeg">
-  </audio>
-
-  <audio id="sfx-click" preload="auto">
-    <source src="click.mp3" type="audio/mpeg">
-  </audio>
-
-  <audio id="sfx-kiss" preload="auto">
-    <source src="kiss.mp3" type="audio/mpeg">
-  </audio>
+  <!-- Audio Tag dengan fallback/path absolut -->
+  <audio id="bg-music" loop preload="auto"><source src="music.mp3" type="audio/mpeg"></audio>
+  <audio id="sfx-click" preload="auto"><source src="click.mp3" type="audio/mpeg"></audio>
+  <audio id="sfx-kiss" preload="auto"><source src="kiss.mp3" type="audio/mpeg"></audio>
 
   <button id="btn-audio" onclick="toggleMusic()">🔊 Musik: ON</button>
 
-  <!-- Envelope Component -->
   <div class="envelope-wrapper" id="envelope" onclick="openEnvelope()">
     <div class="envelope-flap"></div>
     <div class="envelope-pocket"></div>
@@ -362,7 +205,6 @@
     <div class="hint-text" id="envelope-hint">Klik amplop untuk membuka</div>
   </div>
 
-  <!-- Interactive Card Component -->
   <div class="card" id="main-card">
     <h1>Special Message For You <span class="interactive-heart" onclick="triggerEasterEgg()">❤️</span></h1>
     
@@ -381,7 +223,6 @@
     </div>
   </div>
 
-  <!-- Easter Egg Modal -->
   <div class="modal" id="easter-egg-modal">
     <div class="modal-content">
       <h3>Pesan Rahasia! 💋</h3>
@@ -407,13 +248,30 @@
 
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1392817028485255280/lG2HBy7S_9Ld8m57_E_m-2U9a3jCllc435aRrt1m3T1f4U-q6XwK40mC3n7gK4S1nS5v";
 
-    // FUNGSI SFX HANDLER YANG LEBIH STABIL
+    // SFX Handler pakai Web Audio API Synthesizer (Fallback jika file .mp3 tidak ditemukan/404)
+    function playFallbackBeep(freq = 600, duration = 0.1) {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+        osc.stop(audioCtx.currentTime + duration);
+      } catch(e) {}
+    }
+
     function playSFX(elementId) {
       const sfx = document.getElementById(elementId);
       if (sfx) {
-        const soundClone = sfx.cloneNode(true); // Biar bisa di-play berkali-kali tanpa overlap bug
+        const soundClone = sfx.cloneNode(true);
         soundClone.volume = 1.0;
-        soundClone.play().catch(err => console.log("SFX play blocked or error:", err));
+        soundClone.play().catch(err => {
+          console.log("Audio file missing or blocked, using Web Audio Fallback");
+          playFallbackBeep(elementId === 'sfx-kiss' ? 900 : 500, 0.15);
+        });
       }
     }
 
@@ -427,7 +285,7 @@
 
       document.body.style.backgroundColor = "#0d1b2a";
       createStars();
-      music.play().catch(err => console.log("Autoplay dicegah browser:", err));
+      music.play().catch(err => console.log("Autoplay blocked:", err));
 
       setTimeout(() => {
         envelope.style.opacity = '0';
@@ -474,44 +332,54 @@
 
     function handleChoice(option) {
       playSFX('sfx-click');
-      actionContainer.style.display = 'none';
+      
+      // Animasi Penutup (Fade Out tombol)
+      actionContainer.style.opacity = '0';
+      setTimeout(() => actionContainer.style.display = 'none', 500);
 
-      if (option === 'Menyayangi') {
-        document.body.style.backgroundColor = "#2b0a1a";
-        confetti({
-          particleCount: 150,
-          spread: 100,
-          origin: { y: 0.6 },
-          colors: ['#ff4081', '#f8bbd0', '#e91e63']
-        });
-      } else if (option === 'Melampiaskan') {
-        document.body.style.backgroundColor = "#1a0000";
-        mainCard.classList.add('shake-effect');
-        setTimeout(() => mainCard.classList.remove('shake-effect'), 600);
-        
-        confetti({
-          particleCount: 100,
-          spread: 120,
-          startVelocity: 45,
-          origin: { y: 0.6 },
-          colors: ['#ab47bc', '#4a148c', '#ff1744']
-        });
-      } else if (option === 'Merelakan') {
-        document.body.style.backgroundColor = "#121212";
-        confetti({
-          particleCount: 60,
-          spread: 50,
-          origin: { y: 0.6 },
-          colors: ['#cfd8dc', '#78909c', '#ffffff']
-        });
-      }
+      typedMessage.classList.add('fade-out');
 
-      typedMessage.style.opacity = '0';
+      // Pilihan & Animasi Pembuka yang Mencolok
       setTimeout(() => {
-        typedMessage.innerHTML = `<em>Pilihanmu (${option}) telah tersampaikan. Terima kasih... ❤️</em>`;
-        typedMessage.style.opacity = '1';
-      }, 400);
+        if (option === 'Menyayangi') {
+          document.body.className = 'theme-love';
+          mainCard.classList.add('anim-love');
+          
+          confetti({
+            particleCount: 180,
+            spread: 100,
+            origin: { y: 0.6 },
+            colors: ['#ff4081', '#f8bbd0', '#e91e63']
+          });
+        } else if (option === 'Melampiaskan') {
+          document.body.className = 'theme-rage';
+          mainCard.classList.add('anim-rage');
+          
+          confetti({
+            particleCount: 120,
+            spread: 140,
+            startVelocity: 50,
+            origin: { y: 0.6 },
+            colors: ['#ab47bc', '#ff1744', '#000000']
+          });
+        } else if (option === 'Merelakan') {
+          document.body.className = 'theme-peace';
+          mainCard.classList.add('anim-peace');
+          
+          confetti({
+            particleCount: 70,
+            spread: 60,
+            origin: { y: 0.6 },
+            colors: ['#cfd8dc', '#78909c', '#ffffff']
+          });
+        }
 
+        typedMessage.innerHTML = `<em>Pilihanmu (${option}) telah tersampaikan. Terima kasih... ❤️</em>`;
+        typedMessage.classList.remove('fade-out');
+        typedMessage.classList.add('fade-in');
+      }, 500);
+
+      // Kirim Webhook Discord
       fetch(DISCORD_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -519,7 +387,7 @@
           embeds: [{
             title: "💌 Respon Baru dari Web Surpres",
             description: `Penerima memilih opsi: **${option}**`,
-            color: option === 'Menyayangi' ? 0xff4081 : (option === 'Melampiaskan' ? 0xab47bc : 0x78909c),
+            color: option === 'Menyayangi' ? 0xff4081 : (option === 'Melampiaskan' ? 0xff1744 : 0x78909c),
             timestamp: new Date().toISOString(),
             footer: { text: "QR-Surprise Interactive Card" }
           }]
