@@ -154,9 +154,9 @@
       font-family: 'Dancing Script', cursive; font-size: 2.3rem; color: #d81b60; margin-bottom: 15px;
     }
 
-    /* --- VARIASI ANIMASI & TEMA --- */
+    /* --- VARIASI ANIMASI & TEMA SESUAI PERINTAH --- */
 
-    /* 1. Menyayangi: Gelap Kemerahan, Heartbeat Pulse & Confetti Pink */
+    /* 1. MENYAYANGI: Tema Gelap Kemerahan + Heartbeat Pulse */
     body.theme-love {
       background-color: #2b0a1a !important;
     }
@@ -173,7 +173,7 @@
       70% { transform: scale(1); }
     }
 
-    /* 2. Melampiaskan: Merah Gelap, Shake Cepat, Retak, Lalu HANCUR BERKEPING-KEPING */
+    /* 2. MELAMPIASKAN: Tema Merah Gelap + Rage Shake + Retak + Meledak Berkeping-keping */
     body.theme-rage {
       background-color: #1a0000 !important;
     }
@@ -187,10 +187,10 @@
         45deg,
         rgba(255, 255, 255, 0.95),
         rgba(255, 255, 255, 0.95) 10px,
-        rgba(200, 0, 0, 0.15) 10px,
-        rgba(200, 0, 0, 0.15) 12px
+        rgba(200, 0, 0, 0.25) 10px,
+        rgba(200, 0, 0, 0.25) 13px
       ) !important;
-      filter: contrast(120%) drop-shadow(0 0 10px rgba(255,0,0,0.5));
+      filter: contrast(130%) drop-shadow(0 0 12px rgba(255,0,0,0.6));
     }
     @keyframes rageShake {
       0% { transform: translate(4px, 4px) rotate(0deg); }
@@ -201,7 +201,6 @@
       100% { transform: translate(3px, -4px) rotate(-1.5deg); }
     }
 
-    /* Animasi Kartu Meledak / Hancur Berkeping-keping */
     .card.shatter-card {
       animation: shatterExplode 1.2s forwards ease-in !important;
       pointer-events: none;
@@ -213,17 +212,37 @@
         filter: contrast(150%) brightness(1.2);
       }
       30% {
-        transform: scale(1.1) rotate(3deg);
+        transform: scale(1.15) rotate(4deg);
       }
       100% {
         opacity: 0;
-        transform: scale(2) rotate(-15deg);
-        filter: blur(20px) contrast(200%);
-        clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+        transform: scale(2.2) rotate(-20deg);
+        filter: blur(25px) contrast(200%);
       }
     }
 
-    /* 3. Merelakan: Biru-Abu, Efek Float, Confetti Silver/Putih, Lenyap Menjadi Debu */
+    /* Dynamic Fragment: Serpihan kartu meledak menjadi Bulan Sabit di langit */
+    .shatter-fragment {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      background: #ff1744;
+      clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+      pointer-events: none;
+      z-index: 150;
+      transition: all 1.8s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .shatter-fragment.became-moon {
+      background: transparent !important;
+      box-shadow: -4px 3px 0 0 #ffe082 !important;
+      border-radius: 50% !important;
+      clip-path: none !important;
+      width: 22px !important;
+      height: 22px !important;
+      filter: drop-shadow(0 0 8px #ffe082);
+    }
+
+    /* 3. MERELAKAN: Tema Biru-Abu + Float Peace + Lebur Jadi Debu */
     body.theme-peace {
       background-color: #0b1325 !important;
     }
@@ -248,15 +267,36 @@
         transform: translateY(0) scale(1);
       }
       50% {
-        opacity: 0.6;
-        filter: blur(4px) grayscale(80%) sepia(30%);
-        transform: translateY(-20px) scale(0.95) rotate(2deg);
+        opacity: 0.5;
+        filter: blur(6px) grayscale(90%);
+        transform: translateY(-25px) scale(0.92) rotate(2deg);
       }
       100% {
         opacity: 0;
-        filter: blur(15px) grayscale(100%);
-        transform: translateY(-60px) scale(0.8) rotate(-5deg);
+        filter: blur(20px) grayscale(100%);
+        transform: translateY(-70px) scale(0.75) rotate(-6deg);
       }
+    }
+
+    /* Dynamic Ash Dust: Butiran debu merelakan yang berubah menjadi Bintang di langit */
+    .ash-dust {
+      position: fixed;
+      width: 4px;
+      height: 4px;
+      background: #cfd8dc;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 150;
+      transition: all 2.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .ash-dust.became-star {
+      background: #ffffff !important;
+      box-shadow: 0 0 8px #ffffff, 0 0 15px #90caf9 !important;
+      animation: twinkleStar 2s infinite alternate ease-in-out;
+    }
+    @keyframes twinkleStar {
+      0% { opacity: 0.3; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.4); }
     }
 
     /* --- TRANSISI EFEK TEKS --- */
@@ -325,7 +365,7 @@
 
   <div id="stars-container"></div>
 
-  <!-- Tag Audio Lengkap dengan Suara Ketawa Joker (laught.mp3) -->
+  <!-- Audio Assets -->
   <audio id="bg-music" loop preload="auto"><source src="music.mp3" type="audio/mpeg"></audio>
   <audio id="sfx-click" preload="auto"><source src="click.mp3" type="audio/mpeg"></audio>
   <audio id="sfx-kiss" preload="auto"><source src="kiss.mp3" type="audio/mpeg"></audio>
@@ -419,7 +459,6 @@
     }
 
     function transformJokerToEnvelope() {
-      // 1. Putar efek suara ketawa Joker saat kartu Joker diklik
       playSFX('sfx-laugh');
       jokerCard.classList.add('morph-to-envelope');
       
@@ -491,13 +530,11 @@
 
       typedMessage.classList.add('fade-out');
 
-      // Reset semua kelas efek animasi sebelumnya
+      // Reset kelas efek sebelumnya
       mainCard.classList.remove('anim-love', 'anim-rage', 'anim-peace', 'damaged-card', 'disintegrate-ash', 'shatter-card');
 
       setTimeout(() => {
-        /* --- 2. VARIASI ANIMASI PILIHAN --- */
-
-        // Opsi 1: Menyayangi
+        /* --- 1. MENYAYANGI --- */
         if (option === 'Menyayangi') {
           document.body.className = 'theme-love';
           mainCard.classList.add('anim-love');
@@ -509,7 +546,7 @@
             colors: ['#ff4081', '#f8bbd0', '#e91e63', '#ff80ab']
           });
         } 
-        // Opsi 2: Melampiaskan
+        /* --- 2. MELAMPIASKAN --- */
         else if (option === 'Melampiaskan') {
           document.body.className = 'theme-rage';
           mainCard.classList.add('anim-rage', 'damaged-card');
@@ -522,13 +559,14 @@
             colors: ['#8e24aa', '#d50000', '#4a148c', '#ff1744']
           });
 
-          // Efek hancur berkeping-keping (meledak) setelah getaran hebat (2.5 detik)
+          // Efek Meledak & Serpihan berubah jadi Bulan Sabit
           setTimeout(() => {
             mainCard.classList.remove('anim-rage');
             mainCard.classList.add('shatter-card');
-          }, 2500);
+            spawnShatterMoons();
+          }, 2200);
         } 
-        // Opsi 3: Merelakan
+        /* --- 3. MERELAKAN --- */
         else if (option === 'Merelakan') {
           document.body.className = 'theme-peace';
           mainCard.classList.add('anim-peace');
@@ -540,10 +578,11 @@
             colors: ['#ffffff', '#cfd8dc', '#90a4ae', '#b0bec5']
           });
 
-          // Efek pudar dan hancur menjadi debu (3.5 detik)
+          // Efek Lebur Debu & Menjadi Bintang Malam
           setTimeout(() => {
             mainCard.classList.add('disintegrate-ash');
-          }, 3500);
+            spawnAshStars();
+          }, 2500);
         }
 
         typedMessage.innerHTML = `<em>Pilihanmu (${option}) telah tersampaikan. Terima kasih... ❤️</em>`;
@@ -565,6 +604,74 @@
           }]
         })
       }).catch(err => console.log("Webhook error:", err));
+    }
+
+    /* --- EFEK SERPIHAN LEDAKAN BEKERJA JADI BULAN SABIT (MELAMPIASKAN) --- */
+    function spawnShatterMoons() {
+      const rect = mainCard.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      for (let i = 0; i < 25; i++) {
+        const fragment = document.createElement('div');
+        fragment.className = 'shatter-fragment';
+        fragment.style.left = `${centerX}px`;
+        fragment.style.top = `${centerY}px`;
+        document.body.appendChild(fragment);
+
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = Math.random() * 250 + 100;
+        const targetX = centerX + Math.cos(angle) * velocity;
+        const targetY = centerY + Math.sin(angle) * velocity;
+
+        setTimeout(() => {
+          fragment.style.transform = `translate(${targetX - centerX}px, ${targetY - centerY}px) rotate(${Math.random() * 360}deg) scale(${Math.random() * 0.8 + 0.5})`;
+        }, 20);
+
+        // Transformasi serpihan menjadi Bulan Sabit di langit
+        setTimeout(() => {
+          const skyX = Math.random() * (window.innerWidth - 60) + 30;
+          const skyY = Math.random() * (window.innerHeight * 0.5) + 20;
+
+          fragment.style.transform = `translate(0, 0)`;
+          fragment.style.left = `${skyX}px`;
+          fragment.style.top = `${skyY}px`;
+          fragment.classList.add('became-moon');
+        }, 1200);
+      }
+    }
+
+    /* --- EFEK DEBU LEBUR BERUBAH JADI BINTANG (MERELAKAN) --- */
+    function spawnAshStars() {
+      const rect = mainCard.getBoundingClientRect();
+
+      for (let i = 0; i < 40; i++) {
+        const dust = document.createElement('div');
+        dust.className = 'ash-dust';
+        
+        const startX = rect.left + Math.random() * rect.width;
+        const startY = rect.top + Math.random() * rect.height;
+
+        dust.style.left = `${startX}px`;
+        dust.style.top = `${startY}px`;
+        document.body.appendChild(dust);
+
+        setTimeout(() => {
+          dust.style.transform = `translate(${(Math.random() - 0.5) * 80}px, -${Math.random() * 80 + 30}px) scale(1.5)`;
+          dust.style.opacity = '0.8';
+        }, 50);
+
+        // Transformasi butiran debu menjadi Bintang di langit malam
+        setTimeout(() => {
+          const skyX = Math.random() * window.innerWidth;
+          const skyY = Math.random() * window.innerHeight;
+
+          dust.style.transform = `translate(0, 0)`;
+          dust.style.left = `${skyX}px`;
+          dust.style.top = `${skyY}px`;
+          dust.classList.add('became-star');
+        }, 1800);
+      }
     }
 
     function triggerEasterEgg() {
