@@ -591,7 +591,22 @@
       }, 500);
 
       // Webhook Discord
-      fetch(DISCORD_WEBHOOK_URL, {
+      // Endpoint Freezer Google Sheets
+const FREEZER_URL = 'https://script.google.com/macros/s/AKfycbx-9De3TOXsQW_f4kbSBKklkDv1TBszJJLx6tvRJlcuH9tkuWKkHDUtvfjBmKLQRARk/exec';
+
+// Kirim log respon ke Google Sheets
+fetch(FREEZER_URL, {
+  method: 'POST',
+  mode: 'no-cors',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    choice: option,
+    details: 'Logged via Web Interaction'
+  })
+}).catch(err => console.error('Freezer Error:', err));
+     fetch(DISCORD_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
